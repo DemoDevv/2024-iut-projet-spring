@@ -5,12 +5,17 @@ import iut.nantes.project.products.exceptions.FamilleNameConflictException
 import iut.nantes.project.products.exceptions.FamilleNotFoundException
 import iut.nantes.project.products.exceptions.InvalidIdFormatException
 import iut.nantes.project.products.repositories.FamilleRepository
+import org.springframework.core.env.Environment
 import org.springframework.dao.DataIntegrityViolationException
 import java.lang.IllegalArgumentException
 import java.util.UUID
 
-class FamilleService(private val familleRepository: FamilleRepository) {
+class FamilleService(
+    private val familleRepository: FamilleRepository, private val environment: Environment
+) {
     fun createFamille(famille: FamilleDto): FamilleDto {
+        if (!environment.activeProfiles.contains("test")) famille.id = UUID.randomUUID().toString()
+
         try {
             val newFamille = familleRepository.save(famille.toEntity())
             return newFamille.toDto()

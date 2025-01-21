@@ -10,7 +10,6 @@ import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 import java.util.UUID.randomUUID
 import kotlin.test.assertEquals
 
@@ -51,7 +50,7 @@ class FamilleServiceIntegrationTest {
     @Transactional
     fun `lorsqu'on recherche une famille existante avec le mauvais id, on doit obtenir une erreur not found`() {
         val goodId = randomUUID().toString()
-        val badId = goodId + "false"
+        val badId = randomUUID().toString()
         val famille1 = FamilleDto(goodId, "famille de test", "Ceci est une famille de test")
 
         familleService.createFamille(famille1)

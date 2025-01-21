@@ -4,7 +4,7 @@ import iut.nantes.project.products.controllers.entities.FamilleEntity
 import jakarta.validation.constraints.Size
 
 data class FamilleDto(
-    val id: String,
+    var id: String?,
     @field:Size(min = 3, max = 30, message = "Le nom d'utilisateur doit contenir entre 3 et 30 caractères")
     val name: String,
     @field:Size(min = 5, max = 100, message = "La description doit contenir entre 5 et 100 caractères")
