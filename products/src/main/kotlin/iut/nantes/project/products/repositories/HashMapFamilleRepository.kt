@@ -6,11 +6,6 @@ import java.util.*
 class HashMapFamilleRepository: FamilleRepository {
     private val data = mutableMapOf<String, FamilleEntity>()
 
-    init {
-        println("hashMap database initied")
-        data["test"] = FamilleEntity("test", "arrete", "putain")
-    }
-
     override fun save(entity: FamilleEntity): FamilleEntity {
         data[entity.id!!] = entity
         return entity

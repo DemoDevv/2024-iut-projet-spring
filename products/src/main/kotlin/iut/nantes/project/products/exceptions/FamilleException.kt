@@ -4,7 +4,7 @@ package iut.nantes.project.products.exceptions
 class FamilleNameConflictException(message: String) : RuntimeException(message)
 
 // Exception levée lorsqu'une famille n'est pas trouvée (HTTP 404)
-class FamilleNotFoundException(message: String) : RuntimeException(message)
+class FamilleNotFoundException(message: String?) : RuntimeException(message ?: "")
 
 // Exception levée si l'ID est invalide (HTTP 400)
 class InvalidIdFormatException(message: String) : RuntimeException(message)

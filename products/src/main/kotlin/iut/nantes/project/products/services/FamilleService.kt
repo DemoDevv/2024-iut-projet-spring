@@ -40,9 +40,19 @@ class FamilleService(
         }.toDto()
     }
 
-    fun updateFamille(id: String, famille: FamilleDto): FamilleDto {
-        deleteFamille(id)
-        return createFamille(famille)
+    fun updateFamille(id: String, familleUpdate: FamilleDto): FamilleDto {
+        val famille = familleRepository.findById(id).orElseThrow { FamilleNotFoundException(null) }
+
+        famille.name = familleUpdate.name
+        famille.description = familleUpdate.description
+
+        try {
+            familleRepository.save(famille)
+        } catch (e: DataIntegrityViolationException) {
+            throw FamilleNameConflictException("Famille with name ${famille.name} already exist.")
+        }
+
+        return famille.toDto()
     }
 
     fun deleteFamille(id: String) {
