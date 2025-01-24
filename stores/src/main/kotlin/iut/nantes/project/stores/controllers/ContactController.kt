@@ -38,6 +38,7 @@ class ContactController(private val contactService: ContactService) {
 
     // DELETE /api/v1/contacts/{id} : Suppression d'un contact
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteContact(@PathVariable id: String) {
         return contactService.deleteContact(id)
     }
