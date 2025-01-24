@@ -13,7 +13,8 @@ class StoreEntity(
     @OneToOne
     @JoinColumn(name = "contact_id", nullable = false)
     var contact: ContactEntity,
-    val products: MutableList<Product> = mutableListOf()
+    @ElementCollection
+    var products: MutableList<Product> = mutableListOf()
 ) {
     constructor(): this(0L, "", ContactEntity())
 
