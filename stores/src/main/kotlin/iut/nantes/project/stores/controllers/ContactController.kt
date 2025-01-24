@@ -27,18 +27,18 @@ class ContactController(private val contactService: ContactService) {
     // GET /api/v1/contacts/{id} : Récupérer un contact par son ID
     @GetMapping("/{id}")
     fun getContactById(@PathVariable id: String): ContactDto {
-        return contactService.getContactById(id.toLong())
+        return contactService.getContactById(id)
     }
 
     // PUT /api/v1/contacts/{id} : Mise à jour d'un contact
     @PutMapping("/{id}")
     fun updateContact(@PathVariable id: String, @Valid @RequestBody contactDto: ContactDto): ContactDto {
-        return contactService.updateContact(id.toLong(), contactDto)
+        return contactService.updateContact(id, contactDto)
     }
 
     // DELETE /api/v1/contacts/{id} : Suppression d'un contact
     @DeleteMapping("/{id}")
     fun deleteContact(@PathVariable id: String) {
-        return contactService.deleteContact(id.toLong())
+        return contactService.deleteContact(id)
     }
 }

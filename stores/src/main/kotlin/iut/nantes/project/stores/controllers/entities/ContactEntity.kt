@@ -12,9 +12,9 @@ import jakarta.persistence.Table
 class ContactEntity(
     @Id @GeneratedValue
     val id: Long?,
-    val email: String,
-    val phone: String,
-    val address: Address,
+    var email: String,
+    var phone: String,
+    var address: Address,
 ) {
     fun toDto(): ContactDto {
         return ContactDto(this.id!!, this.email, this.phone, this.address)

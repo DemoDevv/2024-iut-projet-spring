@@ -1,4 +1,7 @@
 package iut.nantes.project.stores.repositories
 
-interface ContactRepository {
+import iut.nantes.project.stores.controllers.entities.ContactEntity
+import org.springframework.data.jpa.repository.JpaRepository
+
+interface ContactRepository: JpaRepository<ContactEntity, Long> {
 }
