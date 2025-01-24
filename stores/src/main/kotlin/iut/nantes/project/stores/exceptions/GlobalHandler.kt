@@ -1,5 +1,6 @@
 package iut.nantes.project.stores.exceptions
 
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -12,4 +13,17 @@ class GlobalHandler {
         return ResponseEntity.status(500).body(body)
     }
 
+    @ExceptionHandler(InvalidIdFormatException::class)
+    fun handleInvalidIdFormatException(ex: InvalidIdFormatException): ResponseEntity<Unit> =
+        ResponseEntity.status(
+            HttpStatus.BAD_REQUEST
+        ).build()
+
+    @ExceptionHandler(ConflictException::class)
+    fun handleConflictException(ex: ConflictException): ResponseEntity<Unit> =
+        ResponseEntity.status(HttpStatus.CONFLICT).build()
+
+    @ExceptionHandler(ContactNotFoundException::class)
+    fun handleContactNotFoundException(ex: ContactNotFoundException): ResponseEntity<Unit> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).build()
 }
