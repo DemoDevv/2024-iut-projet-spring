@@ -26,4 +26,8 @@ class GlobalHandler {
     @ExceptionHandler(ContactNotFoundException::class)
     fun handleContactNotFoundException(ex: ContactNotFoundException): ResponseEntity<Unit> =
         ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+
+    @ExceptionHandler(StoreNotFoundException::class)
+    fun handleStoreNotFoundException(ex: StoreNotFoundException): ResponseEntity<Unit> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).build()
 }
