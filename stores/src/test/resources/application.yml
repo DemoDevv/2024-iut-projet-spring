@@ -1,2 +1,16 @@
 spring:
   application.name: stores
+  datasource:
+    url: "jdbc:h2:mem:productdb"
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  h2:
+    console:
+      enabled: true
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: create-drop
+server:
+  port: 8082
