@@ -32,8 +32,10 @@ Contraintes :
 
 * Ce service doit fournir une implémentation de la "base de donnée" :
 ** en h2 par default,
-** avec une hashmap si le profile DEV est activé.
+** avec une hashmap si le profile DEV est activé. 
+*** /!\ Par souci de simplification, ce n'est pas grave si une connexion h2 et son repo jpa sont créées, il faut juste que le code utilise la hashmap
 * Ce service ne doit pas utiliser les annotations `@Compoment`, `@Service`, `@Repository`, `@Controller`.
+** @RestController peut-être utilisé, mais uniquement dans le cadre d'un controlleur HTTP
 * Ce service doit avec une architecture en couche :
 ** La couche `controlleur` qui fait la validation des données et la transformation DTO -> Format interne.
 ** La couche `service` qui fait la logique métier.
