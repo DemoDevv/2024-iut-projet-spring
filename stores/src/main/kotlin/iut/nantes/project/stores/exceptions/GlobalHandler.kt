@@ -23,6 +23,10 @@ class GlobalHandler {
     fun handleConflictException(ex: ConflictException): ResponseEntity<Unit> =
         ResponseEntity.status(HttpStatus.CONFLICT).build()
 
+    @ExceptionHandler(InvalidRequestParameters::class)
+    fun handleInvalidRequestParameters(ex: InvalidRequestParameters): ResponseEntity<Unit> =
+        ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+
     @ExceptionHandler(ContactNotFoundException::class)
     fun handleContactNotFoundException(ex: ContactNotFoundException): ResponseEntity<Unit> =
         ResponseEntity.status(HttpStatus.NOT_FOUND).build()
@@ -30,4 +34,16 @@ class GlobalHandler {
     @ExceptionHandler(StoreNotFoundException::class)
     fun handleStoreNotFoundException(ex: StoreNotFoundException): ResponseEntity<Unit> =
         ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+
+    @ExceptionHandler(ProductNotPresentInStoreException::class)
+    fun handleProductNotPresentInStoreException(ex: ProductNotPresentInStoreException): ResponseEntity<Unit> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+
+    @ExceptionHandler(ExcessiveProductRemovalException::class)
+    fun handleExcessiveProductRemovalException(ex: ExcessiveProductRemovalException): ResponseEntity<Unit> =
+        ResponseEntity.status(HttpStatus.CONFLICT).build()
+
+    @ExceptionHandler(DuplicateElementsException::class)
+    fun handleDuplicateElementsException(ex: DuplicateElementsException): ResponseEntity<Unit> =
+        ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
 }
