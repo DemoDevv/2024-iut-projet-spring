@@ -1,5 +1,6 @@
 package iut.nantes.project.stores.services
 
+import iut.nantes.project.stores.controllers.dto.Product
 import iut.nantes.project.stores.controllers.dto.StoreDto
 import iut.nantes.project.stores.exceptions.ContactNotFoundException
 import iut.nantes.project.stores.exceptions.InvalidIdFormatException
@@ -64,5 +65,23 @@ class StoreService(private val storeRepository: StoreRepository, private val con
         val store = storeRepository.findById(idAslong).orElseThrow { StoreNotFoundException() }
 
         storeRepository.delete(store)
+    }
+
+    fun addProductToStore(storeId: String, productId: String, quantity: Int): Product {
+        val storeIdAslong = storeId.toLongOrNull() ?: throw InvalidIdFormatException()
+
+        // TODO: implémenter la fonction
+    }
+
+    fun removeProductFromStore(storeId: String, productId: String, quantity: Int): Product {
+        val storeIdAslong = storeId.toLongOrNull() ?: throw InvalidIdFormatException()
+
+        // TODO: implémenter la fonction
+    }
+
+    fun removeProductsFromStore(storeId: String, productsToRemove: List<String>) {
+        val storeIdAslong = storeId.toLongOrNull() ?: throw InvalidIdFormatException()
+
+        // TODO: implémenter la fonction
     }
 }
