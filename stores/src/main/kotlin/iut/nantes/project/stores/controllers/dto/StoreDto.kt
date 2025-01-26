@@ -10,7 +10,7 @@ data class Product(
     @Id
     val id: String,
     val name: String,
-    val quantity: Int
+    var quantity: Int
 ) {
     constructor(): this("", "", 0)
 }
