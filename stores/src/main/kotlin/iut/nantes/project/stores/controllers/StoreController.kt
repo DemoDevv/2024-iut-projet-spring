@@ -1,6 +1,9 @@
 package iut.nantes.project.stores.controllers
 
+import iut.nantes.project.stores.controllers.dto.Product
 import iut.nantes.project.stores.controllers.dto.StoreDto
+import iut.nantes.project.stores.exceptions.DuplicateElementsException
+import iut.nantes.project.stores.exceptions.InvalidRequestParameters
 import iut.nantes.project.stores.services.StoreService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -44,5 +47,49 @@ class StoreController(private val storeService: StoreService) {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteStore(@PathVariable id: String) {
         storeService.deleteStore(id)
+    }
+
+    // POST /api/v1/stores/{storeId}/products/{productId}/add?quantity=2
+    @PostMapping("/{storeId}/products/{productId}/add")
+    fun addProductToStock(
+        @PathVariable storeId: String,
+        @PathVariable productId: String,
+        @RequestParam(required = false, defaultValue = "1") quantity: Int
+    ): Product {
+        if (quantity <= 0) {
+            throw InvalidRequestParameters()
+        }
+
+        return storeService.addProductToStore(storeId, productId, quantity)
+    }
+
+    // POST /api/v1/stores/{storeId}/products/{productId}/remove?quantity=2
+    @PostMapping("/{storeId}/products/{productId}/remove")
+    fun removeProductFromStock(
+        @PathVariable storeId: String,
+        @PathVariable productId: String,
+        @RequestParam(required = false, defaultValue = "1") quantity: Int
+    ): Product {
+        if (quantity <= 0) {
+            throw InvalidRequestParameters()
+        }
+
+        return storeService.removeProductFromStore(storeId, productId, quantity)
+    }
+
+    // DELETE /api/v1/stores/{storeId}/products
+    @DeleteMapping("/{storeId}/products")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun removeProductsFromStore(
+        @PathVariable storeId: String,
+        @RequestBody productsToRemove: List<String>
+    ) {
+        if (productsToRemove.isEmpty()) return
+
+        if (productsToRemove.distinct().size != productsToRemove.size) {
+            throw DuplicateElementsException()
+        }
+
+        storeService.removeProductsFromStore(storeId, productsToRemove)
     }
 }
