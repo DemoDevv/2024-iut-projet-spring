@@ -1,13 +1,15 @@
 package iut.nantes.project.stores.services
 
 import iut.nantes.project.stores.controllers.dto.ContactDto
+import iut.nantes.project.stores.exceptions.ConflictException
 import iut.nantes.project.stores.exceptions.ContactNotFoundException
 import iut.nantes.project.stores.exceptions.InvalidIdFormatException
 import iut.nantes.project.stores.repositories.ContactRepository
+import iut.nantes.project.stores.repositories.StoreRepository
 import org.springframework.stereotype.Service
 
 @Service
-class ContactService(private val contactRepository: ContactRepository) {
+class ContactService(private val contactRepository: ContactRepository, private val storeRepository: StoreRepository) {
     fun createContact(contact: ContactDto): ContactDto {
         return contactRepository.save(contact.toEntity()).toDto()
     }
@@ -39,7 +41,8 @@ class ContactService(private val contactRepository: ContactRepository) {
     fun deleteContact(id: String) {
         val idAslong = id.toLongOrNull() ?: throw InvalidIdFormatException()
 
-        // TODO: verifier si il existe encore un magasin lié a ce contact
+        // todo: je sais pas si cela fonctionne il faut faire des tests
+        if (storeRepository.existsByContactId(idAslong)) throw ConflictException()
 
         contactRepository.deleteById(idAslong)
     }
