@@ -2,10 +2,7 @@ package iut.nantes.project.stores.services
 
 import iut.nantes.project.stores.controllers.dto.Product
 import iut.nantes.project.stores.controllers.dto.StoreDto
-import iut.nantes.project.stores.exceptions.ContactNotFoundException
-import iut.nantes.project.stores.exceptions.InvalidIdFormatException
-import iut.nantes.project.stores.exceptions.InvalidRequestParameters
-import iut.nantes.project.stores.exceptions.StoreNotFoundException
+import iut.nantes.project.stores.exceptions.*
 import iut.nantes.project.stores.repositories.ContactRepository
 import iut.nantes.project.stores.repositories.StoreRepository
 import org.springframework.http.HttpStatus
@@ -104,9 +101,17 @@ class StoreService(
     fun removeProductFromStore(storeId: String, productId: String, quantity: Int): Product {
         val storeIdAslong = storeId.toLongOrNull() ?: throw InvalidIdFormatException()
 
-        // TODO: implémenter la fonction
+        val store = storeRepository.findById(storeIdAslong).orElseThrow { StoreNotFoundException() }
 
-        return Product()
+        val productInStore = store.products.find { it.id == productId } ?: throw ProductNotPresentInStoreException()
+
+        productInStore.quantity -= quantity
+
+        if (productInStore.quantity < 0) throw ExcessiveProductRemovalException()
+
+        storeRepository.save(store)
+
+        return productInStore
     }
 
     fun removeProductsFromStore(storeId: String, productsToRemove: List<String>) {
