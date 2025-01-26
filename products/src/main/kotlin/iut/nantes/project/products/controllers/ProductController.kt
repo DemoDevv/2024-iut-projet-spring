@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.*
 class ProductController(private val productService: ProductService) {
     // POST: Créer un produit
     @PostMapping
-    fun createProduct(@RequestBody @Valid product: ProductDto): ResponseEntity<ProductDto> {
+    fun createProduct(@RequestBody @Valid product: ProductDto): ResponseEntity<Any> {
         return try {
             val createdProduct = productService.createProduct(product)
             ResponseEntity.status(HttpStatus.CREATED).body(createdProduct)
         } catch (e: FamilleNotFoundException) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
         }
     }
 
