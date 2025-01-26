@@ -84,7 +84,9 @@ class StoreController(private val storeService: StoreService) {
         @PathVariable storeId: String,
         @RequestBody productsToRemove: List<String>
     ) {
-        if (productsToRemove.isEmpty() || productsToRemove.distinct().size != productsToRemove.size) {
+        if (productsToRemove.isEmpty()) return
+
+        if (productsToRemove.distinct().size != productsToRemove.size) {
             throw DuplicateElementsException()
         }
 

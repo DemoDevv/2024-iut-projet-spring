@@ -117,6 +117,8 @@ class StoreService(
     fun removeProductsFromStore(storeId: String, productsToRemove: List<String>) {
         val storeIdAslong = storeId.toLongOrNull() ?: throw InvalidIdFormatException()
 
-        // TODO: implémenter la fonction
+        val store = storeRepository.findById(storeIdAslong).orElseThrow { StoreNotFoundException() }
+
+        store.products.removeAll { productsToRemove.contains(it.id) }
     }
 }
