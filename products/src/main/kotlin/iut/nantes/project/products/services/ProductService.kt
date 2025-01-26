@@ -17,13 +17,21 @@ class ProductService(
 ) {
     fun createProduct(product: ProductDto): ProductDto {
         if (!environment.activeProfiles.contains("test")) product.id = UUID.randomUUID().toString()
+        if(product.family.id==null){
+           throw FamilleNotFoundException("La famille n'a pas été trouvée. Renseignez bien son ID")
+        }else if(!familleRepository.findById(product.family.id!!).isPresent) {
 
-        val isFamille =
-            familleRepository.findById(product.family.id!!).isPresent // todo: pour enlever le possible nul peut être faire un dto différent de celui donnée dans la request
+            throw FamilleNotFoundException("La famille n'existe pas dans la base de données.")
+        }else{
 
-        if (!isFamille) throw FamilleNotFoundException(null) // todo: mettre le message de l'erreur
+            //Si l'id est bon, on ne vérifie pas le nom et la description qui sont peut être pas bonnes, on les remplaces par les vrais qui se trouvent dans les familles.
+            val famille=familleRepository.findById(product.family.id!!)
+            product.family=famille.get().toDto()
+            return productRepository.save(product.toEntity()).toDto()
 
-        return productRepository.save(product.toEntity()).toDto()
+        }
+
+
     }
 
     fun getProducts(familyName: String?, minPrice: Double?, maxPrice: Double?): List<ProductDto> {

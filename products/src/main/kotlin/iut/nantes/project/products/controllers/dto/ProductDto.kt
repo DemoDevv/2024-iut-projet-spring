@@ -20,7 +20,7 @@ data class ProductDto(
     @field:Size(min = 5, max = 100, message = "La description doit contenir entre 5 et 100 caractères")
     val description: String?,
     val price: Price,
-    val family: FamilleDto
+    var family: FamilleDto
 ) {
     fun toEntity(): ProductEntity {
         return ProductEntity(this.id, this.name, this.description, this.price, this.family.toEntity())
