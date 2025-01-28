@@ -123,6 +123,14 @@ class StoreService(
     }
 
     fun removeProductsFromStoreIfZeroQuantity(productId: String) {
-        val stores = storeRepository.findAll().filter {  }
+        storeRepository.findAll().forEach{
+
+            it.products.removeIf { it.id == productId && it.quantity==0}
+            storeRepository.save(it)
+        }
+    }
+
+    fun productExistInStore(productId: String):Boolean{
+        return storeRepository.findAll().any { it.products.any{it.id == productId && it.quantity>0} }
     }
 }

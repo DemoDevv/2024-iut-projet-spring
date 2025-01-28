@@ -2,6 +2,7 @@ package iut.nantes.project.stores.controllers
 
 import iut.nantes.project.stores.controllers.dto.Product
 import iut.nantes.project.stores.controllers.dto.StoreDto
+import iut.nantes.project.stores.exceptions.ConflictException
 import iut.nantes.project.stores.exceptions.DuplicateElementsException
 import iut.nantes.project.stores.exceptions.InvalidRequestParameters
 import iut.nantes.project.stores.services.StoreService
@@ -91,5 +92,19 @@ class StoreController(private val storeService: StoreService) {
         }
 
         storeService.removeProductsFromStore(storeId, productsToRemove)
+    }
+
+    // DELETE /api/v1/stores/products/{productID}
+    @DeleteMapping("/products/{productId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun removeProduct(
+        @PathVariable productId: String
+    ){
+        val result=storeService.productExistInStore(productId)
+        if(result){
+            throw ConflictException()
+        }else{
+            storeService.removeProductsFromStoreIfZeroQuantity(productId)
+        }
     }
 }
