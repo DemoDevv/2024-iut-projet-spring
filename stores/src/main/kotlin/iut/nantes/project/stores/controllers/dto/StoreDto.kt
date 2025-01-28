@@ -1,13 +1,13 @@
 package iut.nantes.project.stores.controllers.dto
 
 import iut.nantes.project.stores.controllers.entities.StoreEntity
+import jakarta.persistence.Embeddable
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.validation.constraints.Size
 
-@Entity
+@Embeddable
 data class Product(
-    @Id
     val id: String,
     val name: String,
     var quantity: Int

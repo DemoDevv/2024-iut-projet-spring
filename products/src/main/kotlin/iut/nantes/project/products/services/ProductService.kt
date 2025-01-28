@@ -37,9 +37,9 @@ class ProductService(
 
         if (familyName != null) products = products.filter { it.family.name == familyName }
 
-        if (minPrice != null) products = products.filter { it.price.amout >= minPrice }
+        if (minPrice != null) products = products.filter { it.price.amount >= minPrice }
 
-        if (maxPrice != null) products = products.filter { it.price.amout <= maxPrice }
+        if (maxPrice != null) products = products.filter { it.price.amount <= maxPrice }
 
         return products.map { it.toDto() }
     }
@@ -83,7 +83,7 @@ class ProductService(
         webClient.get().uri("/api/v1/stores/products/{productId}", productId).retrieve()
             .onStatus({ status -> status == HttpStatus.CONFLICT }) { _ ->
               throw ProductNotDeletableException("Le produit est encore présent dans des stores avec une q>0")
-            }
+            }.toBodilessEntity().block()
         //Si le code est exécuté ici, c'est qu'il n'a pas de conflits, on peut donc supprimer le produit.
             productRepository.deleteById(productId)
     }

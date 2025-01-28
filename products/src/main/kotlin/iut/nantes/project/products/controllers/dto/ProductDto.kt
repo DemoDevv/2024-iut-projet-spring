@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size
 
 data class Price(
     @field:Positive
-    val amout: Int,
+    val amount: Int,
     @field:Size(max = 3)
     val currency: String,
 ) {

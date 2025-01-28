@@ -45,7 +45,7 @@ class ProductServiceIntegrationTest {
         val retrievedProduct = productService.getProductById(uuid)
 
         assertEquals("famille de test", retrievedProduct.family.name)
-        assertEquals(35, retrievedProduct.price.amout)
+        assertEquals(35, retrievedProduct.price.amount)
         assertEquals("produit de test", retrievedProduct.name)
     }
 
@@ -87,7 +87,7 @@ class ProductServiceIntegrationTest {
         val retrievedProduct = productService.getProductById(uuid)
 
         assertEquals("famille de test", retrievedProduct.family.name)
-        assertEquals(35, retrievedProduct.price.amout)
+        assertEquals(35, retrievedProduct.price.amount)
         assertEquals("produit de test", retrievedProduct.name)
     }
 
@@ -123,7 +123,7 @@ class ProductServiceIntegrationTest {
         val retrievedProduct = productService.updateProduct(uuid, productUpdate)
 
         assertEquals("famille de test 2", retrievedProduct.family.name)
-        assertEquals(40, retrievedProduct.price.amout)
+        assertEquals(40, retrievedProduct.price.amount)
         assertEquals("produit de test", retrievedProduct.name)
     }
 
