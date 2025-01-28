@@ -122,7 +122,4 @@ class StoreService(
         store.products.removeAll { productsToRemove.contains(it.id) }
     }
 
-    fun removeProductsFromStoreIfZeroQuantity(productId: String) {
-        val stores = storeRepository.findAll().filter {  }
-    }
 }

@@ -11,8 +11,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 @Entity
-@Table(name="user_table")
-class UserEntity (
+@Table(name = "user_table")
+class UserEntity(
     @Id
     @Column(nullable = false)
     var login: String,
@@ -20,22 +20,21 @@ class UserEntity (
     var password: String,
     @Column(nullable = false)
     var isAdmin: Boolean
-): UserDetails{
+) : UserDetails {
 
+    constructor() : this("", "", false)
 
-
-    constructor(): this("","",false)
-
-    fun toDto(): UserDto{
-        return UserDto(this.login,this.password,this.isAdmin)
+    fun toDto(): UserDto {
+        return UserDto(this.login, this.password, this.isAdmin)
     }
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        var mlist= mutableListOf<GrantedAuthority>(SimpleGrantedAuthority("ROLE_USER"))
+        val mlist = mutableListOf<GrantedAuthority>(SimpleGrantedAuthority("ROLE_USER"))
 
         if (isAdmin) {
             mlist.add(SimpleGrantedAuthority("ROLE_ADMIN"))
         }
+
         return mlist
     }
 
