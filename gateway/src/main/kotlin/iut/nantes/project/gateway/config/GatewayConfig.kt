@@ -16,7 +16,7 @@ class GatewayConfig {
         http {
             csrf { disable() }
             authorizeHttpRequests {
-                authorize("/api/v1/test", permitAll)
+                authorize("/api/v1/user", permitAll)
                 authorize(anyRequest, authenticated)
             }
             httpBasic { }
