@@ -17,6 +17,7 @@ class GatewayConfig {
             csrf { disable() }
             authorizeHttpRequests {
                 authorize("/api/v1/user", permitAll)
+                authorize("", hasRole("ADMIN"))
                 authorize(anyRequest, authenticated)
             }
             httpBasic { }

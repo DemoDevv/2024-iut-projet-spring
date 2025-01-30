@@ -88,7 +88,7 @@ class StoreService(
 
             store.products.add(product!!)
 
-            return product
+            product
         }
 
         productInStore.quantity += quantity
