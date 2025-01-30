@@ -1,0 +1,50 @@
+
+FAMILIES:
+{"name": "Smartphones","description": "All kinds of mobile phones, from basic to advanced models with various features."},
+ 
+{"name": "Kitchen Appliances","description": "Devices used for food preparation, cooking, and storage in the kitchen."},
+ 
+ 
+{"name": "Books","description": "A wide range of literary works, from fiction to non-fiction, for all interests."}
+
+
+PRODUITS:
+(Ici, 3 produits pour une famille, 1 produit pour une famille, une famille sans produit)
+(NE PAS OUBLIER DE CHANGER LES ID EN CONSEQUENCE:
+
+
+{"name": "iPhone 14 Pro","description": "Latest Apple smartphone with advanced camera and display features.","price": {"amount": 999,"currency": "USD"},"family": {"id":"LE UUID","name": "Smartphones","description": "All kinds of mobile phones, from basic to advanced models with various features."}}
+  
+  
+{"name": "Samsung Galaxy S23","description": "Flagship smartphone with powerful performance and high-resolution screen.","price": {"amount": 849,"currency": "USD"},"family": {"id":"LE UUID","name": "Smartphones","description": "All kinds of mobile phones, from basic to advanced models with various features."}}
+
+
+{"name": "Google Pixel 8","description": "Premium smartphone known for its exceptional camera and Android integration.","price": {"amount": 799,"currency": "USD"},"family": {"id":"LE UUID","name": "Smartphones","description": "All kinds of mobile phones, from basic to advanced models with various features."}}
+
+
+{"name": "Instant Pot Duo","description": "7-in-1 electric pressure cooker with multiple cooking functions.","price": {"amount": 89,"currency": "USD"},"family": {"id":"LE UUID","name": "Kitchen Appliances","description": "Devices used for food preparation, cooking, and storage in the kitchen."}}
+
+
+CONTACTS:
+{"email": "contact1@email.com","phone": "0123456789","address": {"street": "15 Rue des Lilas","city": "Paris","postalCode": "75000"}}
+ 
+{"email": "contact2@email.com","phone": "0987654321","address": {"street": "42 Avenue de la République","city": "Lyon","postalCode": "69000"}}
+
+
+STORES: 
+
+
+{"name": "Atlantis","contact": {"id": 1,"email": "contact1@email.com","phone": "0123456789","address": {"street": "15 Rue des Lilas","city": "Paris","postalCode": "75000"}},"products": [{"id": "ea46e5c2-855d-45da-8c7a-0443ab1fe0cc","name": "iPhone 14 Pro","quantity": 4},{"id": "ddb05ebb-5023-4ba1-8672-96f0f7fbc62a","name": "Samsung Galaxy S23","quantity": 1}]}
+  
+ 
+ 
+{"name": "Tech World","contact": {"id": 2,"email": "contact2@email.com","phone": "0987654321","address": {"street": "42 Avenue de la République","city": "Lyon","postalCode": "69000"}},"products": []}
+
+
+
+
+
+
+
+
+
