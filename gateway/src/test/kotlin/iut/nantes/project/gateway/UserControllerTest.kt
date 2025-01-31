@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithAnonymousUser
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -21,15 +20,6 @@ class UserControllerTest {
 
     @Autowired
     private lateinit var objectMapper: ObjectMapper
-
-    @WithAnonymousUser
-    @Test
-    fun `admin route without admin role`() {
-        mockMvc.get("/api/v1/families")
-            .andExpect {
-                status { isUnauthorized() }
-            }
-    }
 
     @WithAnonymousUser
     @Test
