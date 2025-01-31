@@ -15,9 +15,9 @@ import org.springframework.security.core.userdetails.UserDetails
 class UserEntity(
     @Id
     @Column(nullable = false)
-    var login: String,
+    val login: String,
     @Column(nullable = false)
-    var password: String,
+    private val password: String,
     @Column(nullable = false)
     var isAdmin: Boolean
 ) : UserDetails {
@@ -29,13 +29,15 @@ class UserEntity(
     }
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        val mlist = mutableListOf<GrantedAuthority>(SimpleGrantedAuthority("ROLE_USER"))
+        val authorities = mutableListOf<GrantedAuthority>()
+
+        authorities.add(SimpleGrantedAuthority("USER")) // Tous les utilisateurs ont le rôle USER
 
         if (isAdmin) {
-            mlist.add(SimpleGrantedAuthority("ROLE_ADMIN"))
+            authorities.add(SimpleGrantedAuthority("ADMIN"))
         }
 
-        return mlist
+        return authorities
     }
 
     override fun getPassword(): String {
@@ -44,21 +46,5 @@ class UserEntity(
 
     override fun getUsername(): String {
         return this.login
-    }
-
-    override fun isEnabled(): Boolean {
-        return super.isEnabled()
-    }
-
-    override fun isAccountNonExpired(): Boolean {
-        return super.isAccountNonExpired()
-    }
-
-    override fun isAccountNonLocked(): Boolean {
-        return super.isAccountNonLocked()
-    }
-
-    override fun isCredentialsNonExpired(): Boolean {
-        return super.isCredentialsNonExpired()
     }
 }

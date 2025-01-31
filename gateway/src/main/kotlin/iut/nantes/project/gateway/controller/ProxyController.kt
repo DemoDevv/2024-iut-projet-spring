@@ -1,7 +1,9 @@
 package iut.nantes.project.gateway.controller
 
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.reactive.function.client.WebClient
@@ -12,24 +14,30 @@ class ProxyController(private val webClientBuilder: WebClient.Builder) {
     private val productsServiceUrl = "http://localhost:8081/api/v1/products"
     private val storesServiceUrl = "http://localhost:8082/api/v1/stores"
 
-    @GetMapping("/{service}/{**endpoint}")
+    @GetMapping("/{service}/**")
     fun proxyRequest(
         @PathVariable service: String,
-        @PathVariable endpoint: String,
         @RequestHeader headers: HttpHeaders,
-        @RequestParam params: MultiValueMap<String, String>
+        @RequestParam params: MultiValueMap<String, String>,
+        request: HttpServletRequest
     ): ResponseEntity<*> {
+        // Extraire le login de l'utilisateur authentifié
+        val authentication = SecurityContextHolder.getContext().authentication
+        val username = authentication.name
+
+        val endpoint = request.requestURI.substringAfter("/$service/")
+
+        // Construire l'URL cible en fonction du service
         val targetUrl = when (service) {
             "products" -> "$productsServiceUrl/$endpoint"
             "stores" -> "$storesServiceUrl/$endpoint"
             else -> throw IllegalArgumentException("Invalid service: $service")
         }
 
-        // Ajouter le header X-User
+        // Ajouter le header X-User avec le login de l'utilisateur
         val modifiedHeaders = HttpHeaders()
         modifiedHeaders.putAll(headers)
-        val user = headers.getFirst("Authorization")?.let { login(it) } ?: "Anonymous"
-        modifiedHeaders["X-User"] = user
+        modifiedHeaders["X-User"] = username
 
         // Utiliser WebClient pour rediriger la requête
         val webClient = webClientBuilder.build()
@@ -43,9 +51,5 @@ class ProxyController(private val webClientBuilder: WebClient.Builder) {
             .retrieve()
             .toEntity(String::class.java)
             .block() ?: ResponseEntity.internalServerError().build<Any>()
-    }
-
-    private fun login(token: String): String {
-        return "ADMIN/ADMIN"
     }
 }
