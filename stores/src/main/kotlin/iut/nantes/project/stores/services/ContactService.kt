@@ -1,17 +1,41 @@
 package iut.nantes.project.stores.services
 
 import iut.nantes.project.stores.controllers.dto.ContactDto
-import iut.nantes.project.stores.exceptions.ConflictException
-import iut.nantes.project.stores.exceptions.ContactNotFoundException
-import iut.nantes.project.stores.exceptions.InvalidIdFormatException
+import iut.nantes.project.stores.exceptions.*
 import iut.nantes.project.stores.repositories.ContactRepository
 import iut.nantes.project.stores.repositories.StoreRepository
 import org.springframework.stereotype.Service
+import javax.swing.plaf.synth.SynthCheckBoxMenuItemUI
+import kotlin.time.Duration.Companion.milliseconds
 
 @Service
 class ContactService(private val contactRepository: ContactRepository, private val storeRepository: StoreRepository) {
     fun createContact(contact: ContactDto): ContactDto {
-        return contactRepository.save(contact.toEntity()).toDto()
+
+        //validité du mail
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$".toRegex()
+        if (!contact.email.matches(emailRegex)){
+            throw EmailNotValidExeception()
+
+        //validité du phone number
+        }else if (contact.phone.length!=10){
+            throw PhoneNumberException()
+        //validité de la street
+        }else if (contact.address.street.length<5||contact.address.street.length>50){
+            throw StreetNotValidException()
+        //validité de la city
+        }else if(contact.address.city.isEmpty()||contact.address.city.length>30){
+            throw CityNotValidException()
+
+        //Et validité du code postal
+        }else if(contact.address.postalCode.length!=5){
+            throw PostalCodeNotValidException()
+
+        }else{
+            return contactRepository.save(contact.toEntity()).toDto()
+
+        }
+
     }
 
     fun getAllContacts(city: String?): List<ContactDto> {
