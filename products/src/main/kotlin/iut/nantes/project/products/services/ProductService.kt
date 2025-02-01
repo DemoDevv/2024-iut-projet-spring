@@ -26,8 +26,13 @@ class ProductService(
     fun createProduct(product: ProductDto): ProductDto {
         if (!environment.activeProfiles.contains("test")) product.id = UUID.randomUUID().toString()
 
-        val famille = familleRepository.findById(product.family.id!!).orElseThrow { FamilleNotFoundException("") }
-        product.family = famille.toDto()
+        if (product.family.id==null){
+            throw FamilleNotFoundException("The id hasn't been filled ")
+        }else{
+            val famille = familleRepository.findById(product.family.id!!).orElseThrow { FamilleNotFoundException("This id doesn't exist in Families's database") }
+            product.family = famille.toDto()
+
+        }
 
         return productRepository.save(product.toEntity()).toDto()
     }
@@ -48,7 +53,7 @@ class ProductService(
         try {
             UUID.fromString(id)
         } catch (e: IllegalArgumentException) {
-            throw InvalidIdFormatException("Id is not in a UUID format")
+            throw InvalidIdFormatException("This ID is not in a UUID format")
         }
 
         return productRepository.findById(id).orElseThrow {
@@ -60,9 +65,9 @@ class ProductService(
         val isFamille =
             familleRepository.findById(productUpdate.family.id!!).isPresent
 
-        if (!isFamille) throw FamilleNotFoundException(null)
+        if (!isFamille) throw FamilleNotFoundException("This family doesn't exist")
 
-        val product = productRepository.findById(id).orElseThrow { ProductNotFoundException(null) }
+        val product = productRepository.findById(id).orElseThrow { ProductNotFoundException("This product doesn't exist") }
 
         product.name = productUpdate.name
         product.description = productUpdate.description
