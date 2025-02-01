@@ -13,8 +13,8 @@ import org.springframework.web.reactive.function.client.WebClient
 @Configuration
 class ServicesConfig {
     @Bean
-    fun familleService(familleRepository: FamilleRepository, environment: Environment): FamilleService =
-        FamilleService(familleRepository, environment)
+    fun familleService(familleRepository: FamilleRepository,productRepository: ProductRepository, environment: Environment): FamilleService =
+        FamilleService(familleRepository,productRepository, environment)
 
     @Bean
     fun productService(
