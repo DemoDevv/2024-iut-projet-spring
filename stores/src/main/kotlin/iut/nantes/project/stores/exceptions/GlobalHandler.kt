@@ -16,7 +16,7 @@ class GlobalHandler {
 
     @ExceptionHandler(InvalidIdFormatException::class)
     fun handleInvalidIdFormatException(ex: InvalidIdFormatException): ResponseEntity<String> =
-        ResponseEntity.status(HttpStatus.BAD_REQUEST).body("L'ID must contain only digits.")
+        ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID must contain only digits.")
 
     @ExceptionHandler(ConflictException::class)
     fun handleConflictException(ex: ConflictException): ResponseEntity<String> =
@@ -68,10 +68,10 @@ class GlobalHandler {
         ResponseEntity.status(HttpStatus.NOT_FOUND).body("This product hasn't been found in this store")
 
     @ExceptionHandler(ExcessiveProductRemovalException::class)
-    fun handleExcessiveProductRemovalException(ex: ExcessiveProductRemovalException): ResponseEntity<Unit> =
-        ResponseEntity.status(HttpStatus.CONFLICT).build()
+    fun handleExcessiveProductRemovalException(ex: ExcessiveProductRemovalException): ResponseEntity<String> =
+        ResponseEntity.status(HttpStatus.CONFLICT).body("You tried to delete too much quantity from a product (example: tried to delete 3 quantity on a product who have 1 quantity in this store).")
 
     @ExceptionHandler(DuplicateElementsException::class)
-    fun handleDuplicateElementsException(ex: DuplicateElementsException): ResponseEntity<Unit> =
-        ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+    fun handleDuplicateElementsException(ex: DuplicateElementsException): ResponseEntity<String> =
+        ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Warning: There are duplicates elements in this list.")
 }

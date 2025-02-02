@@ -57,10 +57,6 @@ class StoreController(private val storeService: StoreService) {
         @PathVariable productId: String,
         @RequestParam(required = false, defaultValue = "1") quantity: Int
     ): Product {
-        if (quantity <= 0) {
-            throw InvalidRequestParameters()
-        }
-
         return storeService.addProductToStore(storeId, productId, quantity)
     }
 
@@ -71,11 +67,8 @@ class StoreController(private val storeService: StoreService) {
         @PathVariable productId: String,
         @RequestParam(required = false, defaultValue = "1") quantity: Int
     ): Product {
-        if (quantity <= 0) {
-            throw InvalidRequestParameters()
-        }
 
-        return storeService.removeProductFromStore(storeId, productId, quantity)
+        return storeService.removeProductFromStock(storeId, productId, quantity)
     }
 
     // DELETE /api/v1/stores/{storeId}/products
@@ -85,11 +78,6 @@ class StoreController(private val storeService: StoreService) {
         @PathVariable storeId: String,
         @RequestBody productsToRemove: List<String>
     ) {
-        if (productsToRemove.isEmpty()) return
-
-        if (productsToRemove.distinct().size != productsToRemove.size) {
-            throw DuplicateElementsException()
-        }
 
         storeService.removeProductsFromStore(storeId, productsToRemove)
     }

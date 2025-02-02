@@ -75,6 +75,8 @@ class StoreService(
     fun addProductToStore(storeId: String, productId: String, quantity: Int): Product {
         val storeIdAslong = storeId.toLongOrNull() ?: throw InvalidIdFormatException()
 
+        if (quantity<=0) throw InvalidRequestParameters()
+
         val store = storeRepository.findById(storeIdAslong).orElseThrow { StoreNotFoundException() }
 
         val productInStore = store.products.find { it.id == productId } ?: run {
@@ -97,8 +99,10 @@ class StoreService(
         return productInStore
     }
 
-    fun removeProductFromStore(storeId: String, productId: String, quantity: Int): Product {
+    fun removeProductFromStock(storeId: String, productId: String, quantity: Int): Product {
         val storeIdAslong = storeId.toLongOrNull() ?: throw InvalidIdFormatException()
+
+        if (quantity<=0) throw InvalidRequestParameters()
 
         val store = storeRepository.findById(storeIdAslong).orElseThrow { StoreNotFoundException() }
 
@@ -115,6 +119,12 @@ class StoreService(
 
     fun removeProductsFromStore(storeId: String, productsToRemove: List<String>) {
         val storeIdAslong = storeId.toLongOrNull() ?: throw InvalidIdFormatException()
+
+        if (productsToRemove.isEmpty()) return
+
+        if (productsToRemove.distinct().size != productsToRemove.size) {
+            throw DuplicateElementsException()
+        }
 
         val store = storeRepository.findById(storeIdAslong).orElseThrow { StoreNotFoundException() }
 

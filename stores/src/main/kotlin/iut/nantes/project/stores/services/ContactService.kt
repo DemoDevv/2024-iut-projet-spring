@@ -56,6 +56,9 @@ class ContactService(private val contactRepository: ContactRepository, private v
         if (!contact.email.matches(emailRegex)){
             throw EmailNotValidExeception()
 
+
+
+        //TODO(Les erreurs renseignées dans l'entity adresses ne sont pas levées ("sous entité" donc pas prise en compte ? car l'erreur de phone fonctionne et est dans l'entity principale).si elles fonctionnents cette fonction + ces exceptions créées ne servent à rien.)
             //validité du phone number
         }else if (contact.phone.length!=10){
             throw PhoneNumberException()
