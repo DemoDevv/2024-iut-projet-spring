@@ -87,7 +87,7 @@ class ProductService(
         }
         webClient.get().uri("/api/v1/stores/products/{productId}", productId).retrieve()
             .onStatus({ status -> status == HttpStatus.CONFLICT }) { _ ->
-              throw ProductNotDeletableException("Le produit est encore présent dans des stores avec une q>0")
+              throw ProductNotDeletableException("This product still present in some stores with a quantity greater than 0.")
             }.toBodilessEntity().block()
         //Si le code est exécuté ici, c'est qu'il n'a pas de conflits, on peut donc supprimer le produit.
             productRepository.deleteById(productId)

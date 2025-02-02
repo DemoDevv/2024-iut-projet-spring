@@ -72,7 +72,6 @@ class StoreService(
         storeRepository.delete(store)
     }
 
-    // il faut impérativement testé cette méthode car je ne suis pas du tout sûr de son fonctionnement
     fun addProductToStore(storeId: String, productId: String, quantity: Int): Product {
         val storeIdAslong = storeId.toLongOrNull() ?: throw InvalidIdFormatException()
 
