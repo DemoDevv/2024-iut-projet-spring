@@ -12,29 +12,8 @@ import kotlin.time.Duration.Companion.milliseconds
 class ContactService(private val contactRepository: ContactRepository, private val storeRepository: StoreRepository) {
     fun createContact(contact: ContactDto): ContactDto {
 
-        //validité du mail
-        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$".toRegex()
-        if (!contact.email.matches(emailRegex)){
-            throw EmailNotValidExeception()
-
-        //validité du phone number
-        }else if (contact.phone.length!=10){
-            throw PhoneNumberException()
-        //validité de la street
-        }else if (contact.address.street.length<5||contact.address.street.length>50){
-            throw StreetNotValidException()
-        //validité de la city
-        }else if(contact.address.city.isEmpty()||contact.address.city.length>30){
-            throw CityNotValidException()
-
-        //Et validité du code postal
-        }else if(contact.address.postalCode.length!=5){
-            throw PostalCodeNotValidException()
-
-        }else{
-            return contactRepository.save(contact.toEntity()).toDto()
-
-        }
+        verifyContact(contact)
+        return contactRepository.save(contact.toEntity()).toDto()
 
     }
 
@@ -53,6 +32,7 @@ class ContactService(private val contactRepository: ContactRepository, private v
     fun updateContact(id: String, contactUpdate: ContactDto): ContactDto {
         val idAslong = id.toLongOrNull() ?: throw InvalidIdFormatException()
 
+        verifyContact(contactUpdate)
         val contact = contactRepository.findById(idAslong).orElseThrow { ContactNotFoundException() }
 
         contact.email = contactUpdate.email
@@ -64,10 +44,34 @@ class ContactService(private val contactRepository: ContactRepository, private v
 
     fun deleteContact(id: String) {
         val idAslong = id.toLongOrNull() ?: throw InvalidIdFormatException()
-
-        // todo: je sais pas si cela fonctionne il faut faire des tests
         if (storeRepository.existsByContactId(idAslong)) throw ConflictException()
 
         contactRepository.deleteById(idAslong)
+    }
+
+
+    private fun verifyContact(contact:ContactDto){
+        //validité du mail
+        val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$".toRegex()
+        if (!contact.email.matches(emailRegex)){
+            throw EmailNotValidExeception()
+
+            //validité du phone number
+        }else if (contact.phone.length!=10){
+            throw PhoneNumberException()
+            //validité de la street
+        }else if (contact.address.street.length<5||contact.address.street.length>50){
+            throw StreetNotValidException()
+            //validité de la city
+        }else if(contact.address.city.isEmpty()||contact.address.city.length>30){
+            throw CityNotValidException()
+
+            //Et validité du code postal
+        }else if(contact.address.postalCode.length!=5){
+            throw PostalCodeNotValidException()
+
+        }else{
+            return
+        }
     }
 }

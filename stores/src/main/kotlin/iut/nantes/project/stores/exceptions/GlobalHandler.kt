@@ -15,14 +15,12 @@ class GlobalHandler {
     }
 
     @ExceptionHandler(InvalidIdFormatException::class)
-    fun handleInvalidIdFormatException(ex: InvalidIdFormatException): ResponseEntity<Unit> =
-        ResponseEntity.status(
-            HttpStatus.BAD_REQUEST
-        ).build()
+    fun handleInvalidIdFormatException(ex: InvalidIdFormatException): ResponseEntity<String> =
+        ResponseEntity.status(HttpStatus.BAD_REQUEST).body("L'ID ne doit contenir que des chiffres.")
 
     @ExceptionHandler(ConflictException::class)
-    fun handleConflictException(ex: ConflictException): ResponseEntity<Unit> =
-        ResponseEntity.status(HttpStatus.CONFLICT).build()
+    fun handleConflictException(ex: ConflictException): ResponseEntity<String> =
+        ResponseEntity.status(HttpStatus.CONFLICT).body("Attention : vous essayez de supprimer un élément qui est présent dans une autre structure.\n Veillez à vérifier ces le contenu de ces dernières.")
 
     @ExceptionHandler(InvalidRequestParameters::class)
     fun handleInvalidRequestParameters(ex: InvalidRequestParameters): ResponseEntity<Unit> =
@@ -31,8 +29,8 @@ class GlobalHandler {
 
     //Exception contacts
     @ExceptionHandler(ContactNotFoundException::class)
-    fun handleContactNotFoundException(ex: ContactNotFoundException): ResponseEntity<Unit> =
-        ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+    fun handleContactNotFoundException(ex: ContactNotFoundException): ResponseEntity<String> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body("Le contact n'a pas été trouvé.")
 
     @ExceptionHandler(EmailNotValidExeception::class)
     fun handleEmailNotValidException(ex:EmailNotValidExeception): ResponseEntity<String> =
@@ -60,14 +58,14 @@ class GlobalHandler {
 
     //Exception Stores
     @ExceptionHandler(StoreNotFoundException::class)
-    fun handleStoreNotFoundException(ex: StoreNotFoundException): ResponseEntity<Unit> =
-        ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+    fun handleStoreNotFoundException(ex: StoreNotFoundException): ResponseEntity<String> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body("Le magasin n'a pas été trouvé.")
 
 
     //Exception produits appellés.
     @ExceptionHandler(ProductNotPresentInStoreException::class)
-    fun handleProductNotPresentInStoreException(ex: ProductNotPresentInStoreException): ResponseEntity<Unit> =
-        ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+    fun handleProductNotPresentInStoreException(ex: ProductNotPresentInStoreException): ResponseEntity<String> =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ce produit n'a pas été trouvé dans ce magasin.")
 
     @ExceptionHandler(ExcessiveProductRemovalException::class)
     fun handleExcessiveProductRemovalException(ex: ExcessiveProductRemovalException): ResponseEntity<Unit> =
