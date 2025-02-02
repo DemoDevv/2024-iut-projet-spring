@@ -83,16 +83,18 @@ class StoreController(private val storeService: StoreService) {
     }
 
     // DELETE /api/v1/stores/products/{productID}
+    //Fonction pour pouvoir remove un produit du store, depuis le serveur qui gère les produits.
     @DeleteMapping("/products/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun removeProduct(
         @PathVariable productId: String
-    ){
+    ):Boolean{
         val result=storeService.productExistInStore(productId)
         if(result){
             throw ConflictException()
         }else{
             storeService.removeProductsFromStoreIfZeroQuantity(productId)
+            return true
         }
     }
 }

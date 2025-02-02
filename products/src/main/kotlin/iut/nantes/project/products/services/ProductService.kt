@@ -13,6 +13,7 @@ import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties.
 import org.springframework.core.env.Environment
 import org.springframework.http.HttpStatus
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -85,11 +86,18 @@ class ProductService(
         } catch (e: IllegalArgumentException) {
             throw InvalidIdFormatException("Id is not in a UUID format")
         }
-        webClient.get().uri("/api/v1/stores/products/{productId}", productId).retrieve()
+
+        webClient.delete().uri("/api/v1/stores/products/{productId}", productId).retrieve()
             .onStatus({ status -> status == HttpStatus.CONFLICT }) { _ ->
-              throw ProductNotDeletableException("This product still present in some stores with a quantity greater than 0.")
-            }.toBodilessEntity().block()
+              Mono.error(ProductNotDeletableException("This product still present in some stores with a quantity greater than 0."))
+            }.bodyToMono(Boolean::class.java).block()
+
         //Si le code est exécuté ici, c'est qu'il n'a pas de conflits, on peut donc supprimer le produit.
+        try{
             productRepository.deleteById(productId)
+
+        }catch(e:Exception){
+            throw e
+        }
     }
 }

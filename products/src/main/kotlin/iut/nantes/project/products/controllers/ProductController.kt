@@ -74,14 +74,14 @@ class ProductController(private val productService: ProductService) {
 
     // DELETE: Supprimer un produit par ID
     @DeleteMapping("/{id}")
-    fun deleteProduct(@PathVariable id: String): ResponseEntity<Void> {
+    fun deleteProduct(@PathVariable id: String): ResponseEntity<Any> {
         return try {
             productService.deleteProductById(id)
             ResponseEntity.noContent().build() // 204 No Content
         } catch (e: InvalidIdFormatException) {
             ResponseEntity.badRequest().build()
         } catch (e: ProductNotDeletableException) {
-            ResponseEntity.status(HttpStatus.CONFLICT).build()
+            ResponseEntity.status(HttpStatus.CONFLICT).body(e.message)
         }
     }
 }

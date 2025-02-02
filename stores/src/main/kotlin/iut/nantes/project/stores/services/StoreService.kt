@@ -129,6 +129,7 @@ class StoreService(
         val store = storeRepository.findById(storeIdAslong).orElseThrow { StoreNotFoundException() }
 
         store.products.removeAll { productsToRemove.contains(it.id) }
+        storeRepository.save(store)
     }
 
     fun removeProductsFromStoreIfZeroQuantity(productId: String) {
