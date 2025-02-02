@@ -21,7 +21,7 @@ data class ContactDto(
     @NotBlank
     @Email
     val email: String,
-    @field:Size(min = 10, max = 10)
+    @field:Size(min = 10, max = 10, message = "The phone number is a french number. (example: 012345678)")
     val phone: String,
     val address: Address
 ) {
