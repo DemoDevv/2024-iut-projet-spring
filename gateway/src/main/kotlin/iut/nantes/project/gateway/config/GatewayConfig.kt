@@ -1,5 +1,6 @@
 package iut.nantes.project.gateway.config
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -7,28 +8,43 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.core.userdetails.User
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
+import org.springframework.security.provisioning.JdbcUserDetailsManager
 import org.springframework.security.provisioning.UserDetailsManager
+import javax.sql.DataSource
+
 
 @Configuration
 @EnableWebSecurity
-class GatewayConfig {
+class GatewayConfig(private val dataSource: DataSource) {
+
     @Bean
-    fun passwordEncoder(): PasswordEncoder {
-        return BCryptPasswordEncoder()
+    @ConditionalOnProperty(name = ["gateway.security"], havingValue = "inmemory", matchIfMissing = false)
+    fun inMemoryUserDetailService(): UserDetailsManager {
+        return InMemoryUserDetailsManager(adminUser())
     }
 
     @Bean
-    fun userDetailsService(): UserDetailsManager {
-        // Créer un utilisateur ADMIN par défaut
-        val adminUser = User.withUsername("ADMIN")
-            .password(passwordEncoder().encode("ADMIN"))
-            .roles("ADMIN")
-            .build()
-        return InMemoryUserDetailsManager(adminUser)
+    @ConditionalOnProperty(name = ["gateway.security"], havingValue = "database", matchIfMissing = true)
+    fun jdbcUserDetailsService(): UserDetailsManager {
+        return JdbcUserDetailsManager(dataSource).apply {
+            if (!userExists("ADMIN")) {
+                createUser(adminUser())
+            }
+        }
+    }
+
+    private fun adminUser() = User
+        .withUsername("ADMIN")
+        .password(passwordEncoder().encode("ADMIN"))
+        .roles("ADMIN")
+        .build()
+
+    @Bean
+    fun passwordEncoder(): PasswordEncoder {
+        return BCryptPasswordEncoder()
     }
 
     @Bean

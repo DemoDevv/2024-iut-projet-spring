@@ -39,13 +39,6 @@ class ProxyController(private val webClientBuilder: WebClient.Builder) {
         if (params.isNotEmpty()) targetUrl =
             targetUrl.plus("?${params.map { "${it.key}=${it.value[0]}" }.joinToString("&")}")
 
-        println(service)
-
-        println(endpoint)
-        println(targetUrl)
-
-        println(params)
-
         // Ajouter le header X-User avec le login de l'utilisateur
         val modifiedHeaders = HttpHeaders()
         modifiedHeaders.putAll(headers)

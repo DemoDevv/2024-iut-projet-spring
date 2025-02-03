@@ -21,12 +21,7 @@ class UserEntity(
     @Column(nullable = false)
     var isAdmin: Boolean
 ) : UserDetails {
-
     constructor() : this("", "", false)
-
-    fun toDto(): UserDto {
-        return UserDto(this.login, this.password, this.isAdmin)
-    }
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         val authorities = mutableListOf<GrantedAuthority>()

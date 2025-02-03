@@ -17,12 +17,10 @@ class UserController(
 ) {
     @PostMapping
     fun createUser(@RequestBody request: UserDto): String {
-        // Vérifier si l'utilisateur existe déjà
         if (userDetailsManager.userExists(request.login)) {
             throw IllegalArgumentException("User already exists")
         }
 
-        // Créer un nouvel utilisateur
         val user = User.withUsername(request.login)
             .password(passwordEncoder.encode(request.password))
             .roles(if (request.isAdmin) "ADMIN" else "USER")
