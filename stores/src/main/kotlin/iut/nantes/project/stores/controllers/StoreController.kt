@@ -3,8 +3,6 @@ package iut.nantes.project.stores.controllers
 import iut.nantes.project.stores.controllers.dto.Product
 import iut.nantes.project.stores.controllers.dto.StoreDto
 import iut.nantes.project.stores.exceptions.ConflictException
-import iut.nantes.project.stores.exceptions.DuplicateElementsException
-import iut.nantes.project.stores.exceptions.InvalidRequestParameters
 import iut.nantes.project.stores.services.StoreService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus

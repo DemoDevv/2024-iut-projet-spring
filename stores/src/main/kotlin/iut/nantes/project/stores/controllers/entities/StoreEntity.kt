@@ -16,7 +16,7 @@ class StoreEntity(
     @ElementCollection
     var products: MutableList<Product> = mutableListOf()
 ) {
-    constructor(): this(0L, "", ContactEntity())
+    constructor() : this(0L, "", ContactEntity())
 
     fun toDto(): StoreDto {
         return StoreDto(this.id!!, this.name, this.contact.toDto(), this.products)

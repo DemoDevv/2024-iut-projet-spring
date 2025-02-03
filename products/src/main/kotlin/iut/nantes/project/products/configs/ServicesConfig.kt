@@ -4,7 +4,6 @@ import iut.nantes.project.products.repositories.FamilleRepository
 import iut.nantes.project.products.repositories.ProductRepository
 import iut.nantes.project.products.services.FamilleService
 import iut.nantes.project.products.services.ProductService
-import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties.Web
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment

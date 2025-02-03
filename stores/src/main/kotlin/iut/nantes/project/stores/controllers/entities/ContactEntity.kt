@@ -14,7 +14,7 @@ class ContactEntity(
     @Embedded
     var address: Address,
 ) {
-    constructor(): this(0L, "", "",  Address())
+    constructor() : this(0L, "", "", Address())
 
     fun toDto(): ContactDto {
         return ContactDto(this.id!!, this.email, this.phone, this.address)

@@ -5,8 +5,6 @@ import iut.nantes.project.stores.exceptions.*
 import iut.nantes.project.stores.repositories.ContactRepository
 import iut.nantes.project.stores.repositories.StoreRepository
 import org.springframework.stereotype.Service
-import javax.swing.plaf.synth.SynthCheckBoxMenuItemUI
-import kotlin.time.Duration.Companion.milliseconds
 
 @Service
 class ContactService(private val contactRepository: ContactRepository, private val storeRepository: StoreRepository) {

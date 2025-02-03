@@ -20,8 +20,7 @@ class ProductEntity(
     @ManyToOne
     @JoinColumn(name = "famille_id", nullable = false)
     var family: FamilleEntity
-)
-{
+) {
     constructor() : this(null, "", "", Price(), FamilleEntity())
 
     fun toDto(): ProductDto {

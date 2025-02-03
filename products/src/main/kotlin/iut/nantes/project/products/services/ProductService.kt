@@ -1,6 +1,5 @@
 package iut.nantes.project.products.services
 
-import iut.nantes.project.products.configs.WebClientConfig
 import iut.nantes.project.products.controllers.dto.ProductDto
 import iut.nantes.project.products.exceptions.FamilleNotFoundException
 import iut.nantes.project.products.exceptions.InvalidIdFormatException
@@ -8,12 +7,9 @@ import iut.nantes.project.products.exceptions.ProductNotDeletableException
 import iut.nantes.project.products.exceptions.ProductNotFoundException
 import iut.nantes.project.products.repositories.FamilleRepository
 import iut.nantes.project.products.repositories.ProductRepository
-import org.apache.catalina.Store
-import org.springframework.boot.actuate.autoconfigure.metrics.MetricsProperties.Web
 import org.springframework.core.env.Environment
 import org.springframework.http.HttpStatus
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 import java.lang.IllegalArgumentException
 import java.util.*
