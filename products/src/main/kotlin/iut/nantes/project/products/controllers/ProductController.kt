@@ -34,11 +34,12 @@ class ProductController(private val productService: ProductService) {
         @RequestParam(required = false) minprice: Double?,
         @RequestParam(required = false) maxprice: Double?
     ): ResponseEntity<Any> {
-        if (minprice != null  && minprice <= 0 ) {
+        if (minprice != null && minprice <= 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("the minprice must be >0")
         }
-        if (minprice != null && maxprice != null &&  minprice >= maxprice) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("the minPrice can't be equal or higher than the maxPrice")
+        if (minprice != null && maxprice != null && minprice >= maxprice) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("the minPrice can't be equal or higher than the maxPrice")
         }
 
         val products = productService.getProducts(familyname, minprice, maxprice)

@@ -17,7 +17,7 @@ class FamilleService(
     private val productRepository: ProductRepository,
     private val environment: Environment,
 
-) {
+    ) {
     fun createFamille(famille: FamilleDto): FamilleDto {
         if (!environment.activeProfiles.contains("test")) famille.id = UUID.randomUUID().toString()
 
@@ -66,9 +66,9 @@ class FamilleService(
             .orElseThrow { FamilleNotFoundException("Famille with ID $id not found.") }
 
         // Vérification s'il y a des produits liés à cette famille
-        if (productRepository.findAll().any{ it.family.id == id}) {
+        if (productRepository.findAll().any { it.family.id == id }) {
             throw FamilleHasLinkedProductsException("Cannot delete a family with linked products.")
-        }else {
+        } else {
             familleRepository.deleteById(id)
         }
 

@@ -27,10 +27,11 @@ class ProductService(
     fun createProduct(product: ProductDto): ProductDto {
         if (!environment.activeProfiles.contains("test")) product.id = UUID.randomUUID().toString()
 
-        if (product.family.id==null){
+        if (product.family.id == null) {
             throw FamilleNotFoundException("The id hasn't been filled ")
-        }else{
-            val famille = familleRepository.findById(product.family.id!!).orElseThrow { FamilleNotFoundException("This id doesn't exist in Families's database") }
+        } else {
+            val famille = familleRepository.findById(product.family.id!!)
+                .orElseThrow { FamilleNotFoundException("This id doesn't exist in Families's database") }
             product.family = famille.toDto()
 
         }
@@ -68,7 +69,8 @@ class ProductService(
 
         if (!isFamille) throw FamilleNotFoundException("This family doesn't exist")
 
-        val product = productRepository.findById(id).orElseThrow { ProductNotFoundException("This product doesn't exist") }
+        val product =
+            productRepository.findById(id).orElseThrow { ProductNotFoundException("This product doesn't exist") }
 
         product.name = productUpdate.name
         product.description = productUpdate.description
@@ -89,14 +91,14 @@ class ProductService(
 
         webClient.delete().uri("/api/v1/stores/products/{productId}", productId).retrieve()
             .onStatus({ status -> status == HttpStatus.CONFLICT }) { _ ->
-              Mono.error(ProductNotDeletableException("This product still present in some stores with a quantity greater than 0."))
+                Mono.error(ProductNotDeletableException("This product still present in some stores with a quantity greater than 0."))
             }.bodyToMono(Boolean::class.java).block()
 
         //Si le code est exécuté ici, c'est qu'il n'a pas de conflits, on peut donc supprimer le produit.
-        try{
+        try {
             productRepository.deleteById(productId)
 
-        }catch(e:Exception){
+        } catch (e: Exception) {
             throw e
         }
     }

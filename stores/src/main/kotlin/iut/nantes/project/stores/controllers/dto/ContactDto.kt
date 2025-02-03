@@ -13,7 +13,7 @@ data class Address(
     @field:Size(min = 5, max = 5)
     val postalCode: String
 ) {
-    constructor(): this("", "", "")
+    constructor() : this("", "", "")
 }
 
 data class ContactDto(

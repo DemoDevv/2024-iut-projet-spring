@@ -10,7 +10,7 @@ data class Price(
     @field:Size(max = 3)
     val currency: String,
 ) {
-    constructor(): this(0, "")
+    constructor() : this(0, "")
 }
 
 data class ProductDto(

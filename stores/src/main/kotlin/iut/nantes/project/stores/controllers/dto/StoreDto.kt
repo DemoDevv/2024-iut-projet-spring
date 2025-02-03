@@ -12,7 +12,7 @@ data class Product(
     val name: String,
     var quantity: Int
 ) {
-    constructor(): this("", "", 0)
+    constructor() : this("", "", 0)
 }
 
 // todo: je comprends pas la phrase "Le nom du produit doit être cohérent avec le contenu du service product." du sujet

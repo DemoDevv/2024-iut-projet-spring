@@ -50,30 +50,29 @@ class ContactService(private val contactRepository: ContactRepository, private v
     }
 
 
-    private fun verifyContact(contact:ContactDto){
+    private fun verifyContact(contact: ContactDto) {
         //validité du mail
         val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$".toRegex()
-        if (!contact.email.matches(emailRegex)){
+        if (!contact.email.matches(emailRegex)) {
             throw EmailNotValidExeception()
 
 
-
-        //TODO(Les erreurs renseignées dans l'entity adresses ne sont pas levées ("sous entité" donc pas prise en compte ? car l'erreur de phone fonctionne et est dans l'entity principale).si elles fonctionnents cette fonction + ces exceptions créées ne servent à rien.)
+            //TODO(Les erreurs renseignées dans l'entity adresses ne sont pas levées ("sous entité" donc pas prise en compte ? car l'erreur de phone fonctionne et est dans l'entity principale).si elles fonctionnents cette fonction + ces exceptions créées ne servent à rien.)
             //validité du phone number
-        }else if (contact.phone.length!=10){
+        } else if (contact.phone.length != 10) {
             throw PhoneNumberException()
             //validité de la street
-        }else if (contact.address.street.length<5||contact.address.street.length>50){
+        } else if (contact.address.street.length < 5 || contact.address.street.length > 50) {
             throw StreetNotValidException()
             //validité de la city
-        }else if(contact.address.city.isEmpty()||contact.address.city.length>30){
+        } else if (contact.address.city.isEmpty() || contact.address.city.length > 30) {
             throw CityNotValidException()
 
             //Et validité du code postal
-        }else if(contact.address.postalCode.length!=5){
+        } else if (contact.address.postalCode.length != 5) {
             throw PostalCodeNotValidException()
 
-        }else{
+        } else {
             return
         }
     }

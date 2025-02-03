@@ -75,7 +75,7 @@ class StoreService(
     fun addProductToStore(storeId: String, productId: String, quantity: Int): Product {
         val storeIdAslong = storeId.toLongOrNull() ?: throw InvalidIdFormatException()
 
-        if (quantity<=0) throw InvalidRequestParameters()
+        if (quantity <= 0) throw InvalidRequestParameters()
 
         val store = storeRepository.findById(storeIdAslong).orElseThrow { StoreNotFoundException() }
 
@@ -102,7 +102,7 @@ class StoreService(
     fun removeProductFromStock(storeId: String, productId: String, quantity: Int): Product {
         val storeIdAslong = storeId.toLongOrNull() ?: throw InvalidIdFormatException()
 
-        if (quantity<=0) throw InvalidRequestParameters()
+        if (quantity <= 0) throw InvalidRequestParameters()
 
         val store = storeRepository.findById(storeIdAslong).orElseThrow { StoreNotFoundException() }
 
@@ -133,14 +133,14 @@ class StoreService(
     }
 
     fun removeProductsFromStoreIfZeroQuantity(productId: String) {
-        storeRepository.findAll().forEach{
+        storeRepository.findAll().forEach {
 
-            it.products.removeIf { it.id == productId && it.quantity==0}
+            it.products.removeIf { it.id == productId && it.quantity == 0 }
             storeRepository.save(it)
         }
     }
 
-    fun productExistInStore(productId: String):Boolean{
-        return storeRepository.findAll().any { it.products.any{it.id == productId && it.quantity>0} }
+    fun productExistInStore(productId: String): Boolean {
+        return storeRepository.findAll().any { it.products.any { it.id == productId && it.quantity > 0 } }
     }
 }

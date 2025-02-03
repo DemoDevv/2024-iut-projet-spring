@@ -88,11 +88,11 @@ class StoreController(private val storeService: StoreService) {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun removeProduct(
         @PathVariable productId: String
-    ):Boolean{
-        val result=storeService.productExistInStore(productId)
-        if(result){
+    ): Boolean {
+        val result = storeService.productExistInStore(productId)
+        if (result) {
             throw ConflictException()
-        }else{
+        } else {
             storeService.removeProductsFromStoreIfZeroQuantity(productId)
             return true
         }
