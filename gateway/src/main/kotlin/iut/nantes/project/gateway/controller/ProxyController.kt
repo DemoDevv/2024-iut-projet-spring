@@ -3,11 +3,13 @@ package iut.nantes.project.gateway.controller
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.util.MultiValueMap
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.toEntity
 
 @RestController
 @RequestMapping("/api/v1/")
@@ -19,11 +21,14 @@ class ProxyController(private val webClientBuilder: WebClient.Builder) {
         "/{service}/**",
         method = [RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE]
     )
-    fun proxyRequestGET(
+    fun proxyRequest(
         @PathVariable service: String,
         @RequestHeader headers: HttpHeaders,
         @RequestParam params: MultiValueMap<String, String>,
-        request: HttpServletRequest
+        request: HttpServletRequest,
+
+        //pour les requetes POST et PUT
+        @RequestBody(required = false) body: String?
     ): ResponseEntity<*> {
         // Extraire le login de l'utilisateur authentifié
         val authentication = SecurityContextHolder.getContext().authentication
@@ -49,19 +54,53 @@ class ProxyController(private val webClientBuilder: WebClient.Builder) {
         modifiedHeaders["X-User"] = username
 
         // Utiliser WebClient pour rediriger la requête
-        val webClient = webClientBuilder.build()
-        val webClientRequest = when (request.method) {
-            HttpMethod.GET.name() -> webClient.get()
-            HttpMethod.POST.name() -> webClient.post()
-            HttpMethod.PUT.name() -> webClient.put()
-            HttpMethod.DELETE.name() -> webClient.delete()
-            else -> throw UnsupportedOperationException("HTTP not supported: ${request.method}")
+        try {
+            return when (request.method) {
+
+                HttpMethod.GET.name() -> webClientBuilder
+                    .build()
+                    .get()
+                    .uri(targetUrl)
+                    .headers { it.addAll(modifiedHeaders) }
+                    .retrieve()
+                    .toEntity(String::class.java)
+                    .block() ?: ResponseEntity.internalServerError().build<Any>()
+
+                HttpMethod.POST.name() -> webClientBuilder.defaultHeader("Content-Type", "application/json")
+                    .build()
+                    .post()
+                    .uri(targetUrl)
+                    .headers { it.addAll(modifiedHeaders) }
+                    .bodyValue(body!!)
+                    .retrieve()
+                    .toEntity(String::class.java)
+                    .block() ?: ResponseEntity.internalServerError().build<Any>()
+
+                HttpMethod.PUT.name() -> webClientBuilder.defaultHeader("Content-Type", "application/json")
+                    .build()
+                    .put()
+                    .uri(targetUrl)
+                    .headers { it.addAll(modifiedHeaders) }
+                    .bodyValue(body!!)
+                    .retrieve()
+                    .toEntity(String::class.java)
+                    .block() ?: ResponseEntity.internalServerError().build<Any>()
+
+                HttpMethod.DELETE.name() -> webClientBuilder
+                    .build()
+                    .delete()
+                    .uri(targetUrl)
+                    .headers { it.addAll(modifiedHeaders) }
+                    .retrieve()
+                    .toEntity(String::class.java)
+                    .block() ?: ResponseEntity.internalServerError().build<Any>()
+
+                else -> throw UnsupportedOperationException("HTTP not supported: ${request.method}")
+            }
+
+        } catch (e: Exception) {
+            println(e.message)
         }
-        return webClientRequest
-            .uri(targetUrl)
-            .headers { it.addAll(modifiedHeaders) }
-            .retrieve()
-            .toEntity(String::class.java)
-            .block() ?: ResponseEntity.internalServerError().build<Any>()
+        return ResponseEntity.badRequest().body("An error has occured. You can't read theses lines if you run this server without modifications.")
     }
 }

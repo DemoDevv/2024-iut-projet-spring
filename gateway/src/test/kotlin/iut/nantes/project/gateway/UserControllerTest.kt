@@ -38,4 +38,18 @@ class UserControllerTest {
             .andExpect(status().isOk)
             .andExpect(content().string("User created successfully"))
     }
+
+    @Test
+    fun `login route with Admin user`() {
+        val userDto = UserDto("MrAdmin", "mdpSecu10", true)
+        val jsonContent = objectMapper.writeValueAsString(userDto)
+
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/api/v1/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonContent)
+        )
+            .andExpect(status().isOk)
+            .andExpect(content().string("User created successfully"))
+    }
 }

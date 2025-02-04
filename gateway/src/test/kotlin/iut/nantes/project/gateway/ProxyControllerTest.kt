@@ -9,6 +9,7 @@ import org.springframework.security.test.context.support.WithAnonymousUser
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.post
 
 @WebMvcTest
 @Import(TestConfiguration::class)
@@ -38,7 +39,44 @@ class ProxyControllerTest {
             }
     }
 
-    @WithMockUser
+    @WithMockUser(roles = ["ADMIN"])
+    @Test
+    fun `basic Admin GET request`() {
+        mockMvc.get("/api/v1/products")
+            .andExpect {
+                status { isOk() }
+            }
+    }
+    @WithAnonymousUser
+    @Test
+    fun `basic anonymous GET request`() {
+        mockMvc.get("/api/v1/products")
+            .andExpect {
+                status { isUnauthorized() }
+            }
+    }
+
+    @WithAnonymousUser
+    @Test
+    fun `basic anonymous POST request`(){
+
+        mockMvc.post("/api/v1/families", "{\"name\":\"Food\",\"description\":\"All foods\"}")
+            .andExpect {
+                status { isUnauthorized() }
+            }
+    }
+
+    @WithMockUser(roles = ["ADMIN"])
+    @Test
+    fun `basic Admin POST request`(){
+
+        mockMvc.post("/api/v1/families", "{\"name\":\"Food\",\"description\":\"All foods\"}")
+            .andExpect {
+                status { isOk() }
+            }
+    }
+
+    @WithMockUser(roles = ["ADMIN"])
     @Test
     fun `route without admin role`() {
         mockMvc.get("/api/v1/stores/1/products/1/add?quantity=2")
