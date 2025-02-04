@@ -54,11 +54,11 @@ class GatewayConfig(private val dataSource: DataSource) {
             csrf { disable() }
             cors { disable() }
             authorizeHttpRequests {
-                authorize("/api/v1/user", permitAll)
+                authorize(HttpMethod.POST,"/api/v1/user", permitAll)
 
-                authorize("/api/v1/stores/{storeId}/products/{productId}/add", authenticated)
-                authorize("/api/v1/stores/{storeId}/products/{productId}/remove", authenticated)
-                authorize("/api/v1/stores/{storeId}/products", authenticated)
+                authorize(HttpMethod.POST,"/api/v1/stores/{storeId}/products/{productId}/add", authenticated)
+                authorize(HttpMethod.POST,"/api/v1/stores/{storeId}/products/{productId}/remove", authenticated)
+                authorize(HttpMethod.DELETE,"/api/v1/stores/{storeId}/products", authenticated)
 
                 authorize(anyRequest, hasRole("ADMIN"))
             }
