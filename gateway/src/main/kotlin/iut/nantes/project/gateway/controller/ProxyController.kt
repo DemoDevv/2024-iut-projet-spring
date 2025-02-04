@@ -2,6 +2,7 @@ package iut.nantes.project.gateway.controller
 
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.util.MultiValueMap
@@ -14,8 +15,11 @@ class ProxyController(private val webClientBuilder: WebClient.Builder) {
     private val productsServiceUrl = "http://localhost:8081/api/v1"
     private val storesServiceUrl = "http://localhost:8082/api/v1"
 
-    @GetMapping("/{service}/**")
-    fun proxyRequest(
+    @RequestMapping(
+        "/{service}/**",
+        method = [RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE]
+    )
+    fun proxyRequestGET(
         @PathVariable service: String,
         @RequestHeader headers: HttpHeaders,
         @RequestParam params: MultiValueMap<String, String>,
@@ -46,7 +50,14 @@ class ProxyController(private val webClientBuilder: WebClient.Builder) {
 
         // Utiliser WebClient pour rediriger la requête
         val webClient = webClientBuilder.build()
-        return webClient.get()
+        val webClientRequest = when (request.method) {
+            HttpMethod.GET.name() -> webClient.get()
+            HttpMethod.POST.name() -> webClient.post()
+            HttpMethod.PUT.name() -> webClient.put()
+            HttpMethod.DELETE.name() -> webClient.delete()
+            else -> throw UnsupportedOperationException("HTTP not supported: ${request.method}")
+        }
+        return webClientRequest
             .uri(targetUrl)
             .headers { it.addAll(modifiedHeaders) }
             .retrieve()
