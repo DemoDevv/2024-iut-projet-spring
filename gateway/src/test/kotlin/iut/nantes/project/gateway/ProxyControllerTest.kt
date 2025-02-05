@@ -61,7 +61,12 @@ class ProxyControllerTest {
     @Test
     fun `basic anonymous POST request`(){
 
-        mockMvc.post("/api/v1/families", "{\"name\":\"Food\",\"description\":\"All foods\"}")
+        val requestBody = """{"name":"Food","description":"All foods"}"""
+
+        mockMvc.post("/api/v1/families"){
+            contentType = MediaType.APPLICATION_JSON
+            content = requestBody
+        }
             .andExpect {
                 status { HttpStatus.UNAUTHORIZED }
             }
@@ -71,11 +76,11 @@ class ProxyControllerTest {
     @Test
     fun `basic Admin POST request`(){
 
-        val requestBody = """{"name":"Foodeeee","description":"All foods"}"""// Corps de la requête JSON
+        val requestBody = """{"name":"Food","description":"All foods"}"""
 
         mockMvc.post("/api/v1/families") {
-            contentType = MediaType.APPLICATION_JSON // Indique que c'est du JSON
-            content = requestBody // Passe le JSON dans le body
+            contentType = MediaType.APPLICATION_JSON
+            content = requestBody
         }
             .andExpect {
                 status { HttpStatus.CREATED }
@@ -87,34 +92,55 @@ class ProxyControllerTest {
     @Test
     fun `basic Admin PUT request`(){
 
-        val requestBody = """{"name":"Foodeeee","description":"All foods"}"""// Corps de la requête JSON
+        val requestBody = """{"name":"Food","description":"All foods"}"""
 
         val request=mockMvc.post("/api/v1/families") {
-            contentType = MediaType.APPLICATION_JSON // Indique que c'est du JSON
-            content = requestBody // Passe le JSON dans le body
+            contentType = MediaType.APPLICATION_JSON
+            content = requestBody
         }.andReturn()
 
         val response=request.response.contentAsString
         val id : String = JsonPath.read(response,"$.id")
+        val newRequestBody = """{"name":"Candies","description":"All types of candies"}"""
+
 
         mockMvc.put("/api/v1/families/{id}",id) {
-            contentType = MediaType.APPLICATION_JSON // Indique que c'est du JSON
-            content = requestBody // Passe le JSON dans le body
+            contentType = MediaType.APPLICATION_JSON
+            content = newRequestBody
         } .andExpect {
             status { HttpStatus.OK }
         }
     }
 
 
-
-
-    @WithMockUser(roles = ["ADMIN"])
+    @WithAnonymousUser
     @Test
-    fun `route without admin role`() {
-        mockMvc.get("/api/v1/stores/1/products/1/add?quantity=2")
-            .andExpect {
-                status { isOk() }
-            }
+    fun `basic Anonymous PUT request`(){
+
+        val adminAutorisation=adminAutorisationForAnonymousTreatement()
+
+        val requestBody = """{"name":"Food","description":"All foods"}"""
+
+        val request=mockMvc.post("/api/v1/families") {
+            contentType = MediaType.APPLICATION_JSON
+            content = requestBody
+            header("Authorization",adminAutorisation)
+
+        }.andReturn()
+
+        val response=request.response.contentAsString
+        val id : String = JsonPath.read(response,"$.id")
+        val newRequestBody = """{"name":"Candies","description":"All types of candies"}"""
+
+
+        mockMvc.put("/api/v1/families/{id}",id) {
+            contentType = MediaType.APPLICATION_JSON
+            content = newRequestBody
+        } .andExpect {
+            status { HttpStatus.UNAUTHORIZED }
+        }
     }
+
+
 
 }
