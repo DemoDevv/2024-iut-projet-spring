@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatusCode
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.util.MultiValueMap
@@ -66,22 +67,22 @@ class ProxyController(private val webClientBuilder: WebClient.Builder) {
                     .toEntity(String::class.java)
                     .block() ?: ResponseEntity.internalServerError().build<Any>()
 
-                HttpMethod.POST.name() -> webClientBuilder.defaultHeader("Content-Type", "application/json")
+                HttpMethod.POST.name() -> webClientBuilder.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .build()
                     .post()
                     .uri(targetUrl)
                     .headers { it.addAll(modifiedHeaders) }
-                    .bodyValue(body!!)
+                    .bodyValue(body?: "")
                     .retrieve()
                     .toEntity(String::class.java)
                     .block() ?: ResponseEntity.internalServerError().build<Any>()
 
-                HttpMethod.PUT.name() -> webClientBuilder.defaultHeader("Content-Type", "application/json")
+                HttpMethod.PUT.name() -> webClientBuilder.defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .build()
                     .put()
                     .uri(targetUrl)
                     .headers { it.addAll(modifiedHeaders) }
-                    .bodyValue(body!!)
+                    .bodyValue(body ?: "")
                     .retrieve()
                     .toEntity(String::class.java)
                     .block() ?: ResponseEntity.internalServerError().build<Any>()
@@ -99,8 +100,7 @@ class ProxyController(private val webClientBuilder: WebClient.Builder) {
             }
 
         } catch (e: Exception) {
-            println(e.message)
+           return  ResponseEntity.badRequest().body("An error has occured, error message: ${e.message}")
         }
-        return ResponseEntity.badRequest().body("An error has occured. You can't read theses lines if you run this server without modifications.")
     }
 }

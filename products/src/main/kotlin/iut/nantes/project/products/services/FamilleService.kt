@@ -46,7 +46,7 @@ class FamilleService(
     }
 
     fun updateFamille(id: String, familleUpdate: FamilleDto): FamilleDto {
-        val famille = familleRepository.findById(id).orElseThrow { FamilleNotFoundException(null) }
+        val famille = familleRepository.findById(id).orElseThrow { FamilleNotFoundException("Family not found.") }
 
         famille.name = familleUpdate.name
         famille.description = familleUpdate.description

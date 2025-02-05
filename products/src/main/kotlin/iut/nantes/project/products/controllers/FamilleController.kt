@@ -53,6 +53,8 @@ class FamilleController(private val familleService: FamilleService) {
             ResponseEntity.ok(updatedFamille)
         } catch (e: FamilleNameConflictException) {
             ResponseEntity.status(HttpStatus.CONFLICT).body(mapOf("error" to "Family name conflict"))
+        } catch (e:FamilleNotFoundException){
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to "Family not found"))
         }
     }
 
