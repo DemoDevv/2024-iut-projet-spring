@@ -2,6 +2,7 @@ package iut.nantes.project.gateway
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.jayway.jsonpath.JsonPath
+import iut.nantes.project.gateway.controller.dto.UserDto
 import org.apache.tomcat.util.codec.binary.Base64
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.put
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import kotlin.math.ceil
 
 @WebMvcTest
@@ -34,9 +36,17 @@ class ProxyControllerTest {
 
 
     private fun adminAutorisationForAnonymousTreatement():String{
-        val credentials = "ADMIN:ADMIN"
+        val userDto = UserDto("MrAdmin", "mdpSecu10", true)
+        val jsonContent = objectMapper.writeValueAsString(userDto)
+
+        mockMvc.post("/api/v1/user"){
+            contentType= MediaType.APPLICATION_JSON
+            content = jsonContent
+        }
+
+        val credentials = "MrAdmin:mdpSecu10"
         val encoded = Base64.encodeBase64String(credentials.toByteArray())
-        return "Basic $credentials"
+        return "Basic $encoded"
     }
 
 
@@ -119,7 +129,7 @@ class ProxyControllerTest {
 
         val adminAutorisation=adminAutorisationForAnonymousTreatement()
 
-        val requestBody = """{"name":"Food","description":"All foods"}"""
+        val requestBody = """{"name":"Drink","description":"All Drink"}"""
 
         val request=mockMvc.post("/api/v1/families") {
             contentType = MediaType.APPLICATION_JSON
@@ -129,7 +139,8 @@ class ProxyControllerTest {
         }.andReturn()
 
         val response=request.response.contentAsString
-        val id : String = JsonPath.read(response,"$.id")
+        println(response)
+        val id  = JsonPath.read<String>(response,"$.id")
         val newRequestBody = """{"name":"Candies","description":"All types of candies"}"""
 
 
