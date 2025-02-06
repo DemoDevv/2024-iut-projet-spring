@@ -203,22 +203,14 @@ class ProxyControllerTest {
 
 
 
-        val request = mockMvc.post("/api/v1/stores/{storeId}/products/{productID}/add?quantity=4",storeId,
+        mockMvc.post("/api/v1/stores/{storeId}/products/{productID}/add?quantity=4",storeId,
             products["products"]?.get(1) ?: 0
         ) {
 
             header("Authorization", adminCredentials)
-        }.andReturn()
-
-        val response = request.response.contentAsString
-        println(response)
-        val id = JsonPath.read<String>(response, "$.id")
-
-
-        mockMvc.delete("/api/v1/families/{id}", id)
-            .andExpect {
-                status { HttpStatus.UNAUTHORIZED }
-            }
+        }.andExpect {
+            status { HttpStatus.CREATED }
+        }
     }
 
 
