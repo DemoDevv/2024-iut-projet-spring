@@ -18,7 +18,10 @@ import org.springframework.test.web.servlet.*
 @Import(TestConfiguration::class)
 class ProxyControllerTest {
 
-//OBLIGATOIRE: LA BASE DE DONNEE DES AUTRES MICRO-SERVICES DOIVENT ETRE EN MEMOIRE POUR TESTER !!!
+//Before testing, reboot the product and stores server.
+//They must be in memory, in order to escape duplicates.
+//excepts 'stocks' test, you can testing all tests.
+//But if you want re test one test, please follow the first instruction.
 
     @Autowired
     lateinit var mockMvc: MockMvc
@@ -27,7 +30,9 @@ class ProxyControllerTest {
     private lateinit var objectMapper: ObjectMapper
 
 
-    //donne un droit admin pour permettre un peuplement d'un serveur en mémoire depuis la gateway, quand on teste pour un anonymous user.
+
+
+    //give an admin privilege to populate a server in memory from gateway when we test a route for an anonymous user.
     private fun adminAutorisationForAnonymousTreatement(): String {
 
         val credentials = "ADMIN:ADMIN"
@@ -36,30 +41,29 @@ class ProxyControllerTest {
     }
 
 
-
     @WithMockUser(roles = ["ADMIN"])
     @Test
     fun `basic Admin GET request`() {
         mockMvc.get("/api/v1/products")
             .andExpect {
-                status { isOk()}
+                status { isOk() }
             }
     }
 
-    @WithAnonymousUser
+    @WithMockUser(roles = ["USER"])
     @Test
-    fun `basic anonymous GET request`() {
+    fun `basic user GET request`() {
         mockMvc.get("/api/v1/products")
 
             .andExpect {
 
-                status { isUnauthorized() }
+                status { isForbidden() }
             }
     }
 
-    @WithAnonymousUser
+    @WithMockUser(roles = ["USER"])
     @Test
-    fun `basic anonymous POST request`() {
+    fun `basic user POST request`() {
 
         val requestBody = """{"name":"Food","description":"All foods"}"""
 
@@ -68,7 +72,7 @@ class ProxyControllerTest {
             content = requestBody
         }
             .andExpect {
-                status { isUnauthorized() }
+                status { isForbidden() }
             }
     }
 
@@ -83,7 +87,7 @@ class ProxyControllerTest {
             content = requestBody
         }
             .andExpect {
-                status { isCreated()}
+                status { isCreated() }
             }
     }
 
@@ -113,9 +117,9 @@ class ProxyControllerTest {
     }
 
 
-    @WithAnonymousUser
+    @WithMockUser(roles = ["USER"])
     @Test
-    fun `basic Anonymous PUT request`() {
+    fun `basic user PUT request`() {
 
         val adminAutorisation = adminAutorisationForAnonymousTreatement()
 
@@ -138,7 +142,7 @@ class ProxyControllerTest {
             contentType = MediaType.APPLICATION_JSON
             content = newRequestBody
         }.andExpect {
-            status { isUnauthorized() }
+            status { isForbidden() }
         }
     }
 
@@ -162,14 +166,14 @@ class ProxyControllerTest {
 
         mockMvc.delete("/api/v1/families/{id}", id)
             .andExpect {
-                status { isNoContent()}
+                status { isNoContent() }
             }
     }
 
 
-    @WithAnonymousUser
+    @WithMockUser(roles = ["USER"])
     @Test
-    fun `basic Anonymous DELETE request`() {
+    fun `basic user DELETE request`() {
 
         val adminAutorisation = adminAutorisationForAnonymousTreatement()
 
@@ -188,30 +192,57 @@ class ProxyControllerTest {
 
         mockMvc.delete("/api/v1/families/{id}", id)
             .andExpect {
-                status { isUnauthorized() }
+                status { isForbidden() }
             }
     }
 
-    //Tests des stocks
+    //TO TEST AN UNIQUE STOCK TEST, REBOOT the two servers in memory.
 
-    @WithAnonymousUser
+
+    @WithMockUser(roles = ["USER"])
     @Test
-    fun `all stock Routes is authorized for anonymous user`() {
+    fun `post stock remove is authorized for basic user`(){
 
         val adminCredentials = adminAutorisationForAnonymousTreatement()
 
-        val storeId=createCompletStoreFromScratch()
-        val products=createSomeProducts()
+        val storeId = createCompletStoreFromScratch()
+        val products = createSomeProducts()
 
 
-
-        mockMvc.post("/api/v1/stores/{storeId}/products/{productID}/add?quantity=4",storeId,
+        mockMvc.post(
+            "/api/v1/stores/{storeId}/products/{productID}/add?quantity=4", storeId,
             products["products"]?.get(1) ?: 0
         ) {
-
             header("Authorization", adminCredentials)
         }.andExpect {
-            status { isCreated() }
+            status { isOk() }
+        }
+
+
+        mockMvc.post("/api/v1/stores/{storeId}/products/{productID}/remove?quantity=2",storeId,
+            products["products"]?.get(1) ?: 0
+        ).andExpect {
+            status { isOk() }
+        }
+
+
+    }
+
+    @WithAnonymousUser
+    @Test
+    fun `delete stock is authorized for anonymous user`(){
+
+        val adminCredentials = adminAutorisationForAnonymousTreatement()
+
+        val storeId = createCompletStoreFromScratch()
+        val products = createSomeProducts()
+
+        mockMvc.delete("/api/v1/stores/{storeId}/products",storeId) {
+            contentType=MediaType.APPLICATION_JSON
+            content= """['${products["products"]!![1]}','${products["products"]!![2]}']"""
+
+        }.andExpect {
+            status { isNoContent() }
         }
     }
 

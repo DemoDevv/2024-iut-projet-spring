@@ -79,9 +79,14 @@ class StoreService(
 
         val store = storeRepository.findById(storeIdAslong).orElseThrow { StoreNotFoundException() }
 
+
         val productInStore = store.products.find { it.id == productId } ?: run {
             // Demander au service products si le produit existe et l'ajouter
-            val product = webClient.get().uri("/api/v1/products/{id}", productId).retrieve()
+            val product = webClient.get().uri("/api/v1/products/{id}", productId)
+                //Ajout du header pour que le store accepte la requete.
+                .header("X-User", "RandomUser")
+
+                .retrieve()
                 .onStatus({ status -> status != HttpStatus.OK }) { _ ->
                     // Gérer les statuts autres que 200
                     Mono.error(InvalidRequestParameters())
