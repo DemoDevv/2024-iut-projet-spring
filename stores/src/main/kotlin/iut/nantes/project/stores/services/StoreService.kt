@@ -72,15 +72,21 @@ class StoreService(
         storeRepository.delete(store)
     }
 
-    // il faut impérativement testé cette méthode car je ne suis pas du tout sûr de son fonctionnement
     fun addProductToStore(storeId: String, productId: String, quantity: Int): Product {
         val storeIdAslong = storeId.toLongOrNull() ?: throw InvalidIdFormatException()
 
+        if (quantity <= 0) throw InvalidRequestParameters()
+
         val store = storeRepository.findById(storeIdAslong).orElseThrow { StoreNotFoundException() }
+
 
         val productInStore = store.products.find { it.id == productId } ?: run {
             // Demander au service products si le produit existe et l'ajouter
-            val product = webClient.get().uri("/api/v1/products/{id}", productId).retrieve()
+            val product = webClient.get().uri("/api/v1/products/{id}", productId)
+                //Ajout du header pour que le store accepte la requete.
+                .header("X-User", "RandomUser")
+
+                .retrieve()
                 .onStatus({ status -> status != HttpStatus.OK }) { _ ->
                     // Gérer les statuts autres que 200
                     Mono.error(InvalidRequestParameters())
@@ -88,7 +94,7 @@ class StoreService(
 
             store.products.add(product!!)
 
-            return product
+            product
         }
 
         productInStore.quantity += quantity
@@ -98,8 +104,10 @@ class StoreService(
         return productInStore
     }
 
-    fun removeProductFromStore(storeId: String, productId: String, quantity: Int): Product {
+    fun removeProductFromStock(storeId: String, productId: String, quantity: Int): Product {
         val storeIdAslong = storeId.toLongOrNull() ?: throw InvalidIdFormatException()
+
+        if (quantity <= 0) throw InvalidRequestParameters()
 
         val store = storeRepository.findById(storeIdAslong).orElseThrow { StoreNotFoundException() }
 
@@ -117,12 +125,27 @@ class StoreService(
     fun removeProductsFromStore(storeId: String, productsToRemove: List<String>) {
         val storeIdAslong = storeId.toLongOrNull() ?: throw InvalidIdFormatException()
 
+        if (productsToRemove.isEmpty()) return
+
+        if (productsToRemove.distinct().size != productsToRemove.size) {
+            throw DuplicateElementsException()
+        }
+
         val store = storeRepository.findById(storeIdAslong).orElseThrow { StoreNotFoundException() }
 
         store.products.removeAll { productsToRemove.contains(it.id) }
+        storeRepository.save(store)
     }
 
     fun removeProductsFromStoreIfZeroQuantity(productId: String) {
-        val stores = storeRepository.findAll().filter {  }
+        storeRepository.findAll().forEach {
+
+            it.products.removeIf { it.id == productId && it.quantity == 0 }
+            storeRepository.save(it)
+        }
+    }
+
+    fun productExistInStore(productId: String): Boolean {
+        return storeRepository.findAll().any { it.products.any { it.id == productId && it.quantity > 0 } }
     }
 }

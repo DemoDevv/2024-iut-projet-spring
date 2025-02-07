@@ -33,9 +33,13 @@ class ProductController(private val productService: ProductService) {
         @RequestParam(required = false) familyname: String?,
         @RequestParam(required = false) minprice: Double?,
         @RequestParam(required = false) maxprice: Double?
-    ): ResponseEntity<List<ProductDto>> {
-        if (minprice != null && maxprice != null && (minprice <= 0 || minprice >= maxprice)) {
-            return ResponseEntity.badRequest().build()
+    ): ResponseEntity<Any> {
+        if (minprice != null && minprice <= 0) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("the minprice must be >0")
+        }
+        if (minprice != null && maxprice != null && minprice >= maxprice) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("the minPrice can't be equal or higher than the maxPrice")
         }
 
         val products = productService.getProducts(familyname, minprice, maxprice)
@@ -49,9 +53,9 @@ class ProductController(private val productService: ProductService) {
             val product = productService.getProductById(id)
             ResponseEntity.ok(product)
         } catch (e: ProductNotFoundException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to "Product not found"))
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.message)
         } catch (e: InvalidIdFormatException) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(mapOf("error" to "Invalid ID format"))
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
         }
     }
 
@@ -60,25 +64,25 @@ class ProductController(private val productService: ProductService) {
     fun updateProduct(
         @PathVariable id: String,
         @RequestBody @Valid productUpdated: ProductDto
-    ): ResponseEntity<ProductDto> {
+    ): ResponseEntity<Any> {
         return try {
             val updatedProduct = productService.updateProduct(id, productUpdated)
             ResponseEntity.ok(updatedProduct)
         } catch (e: FamilleNotFoundException) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
         }
     }
 
     // DELETE: Supprimer un produit par ID
     @DeleteMapping("/{id}")
-    fun deleteProduct(@PathVariable id: String): ResponseEntity<Void> {
+    fun deleteProduct(@PathVariable id: String): ResponseEntity<Any> {
         return try {
             productService.deleteProductById(id)
             ResponseEntity.noContent().build() // 204 No Content
         } catch (e: InvalidIdFormatException) {
             ResponseEntity.badRequest().build()
         } catch (e: ProductNotDeletableException) {
-            ResponseEntity.status(HttpStatus.CONFLICT).build()
+            ResponseEntity.status(HttpStatus.CONFLICT).body(e.message)
         }
     }
 }

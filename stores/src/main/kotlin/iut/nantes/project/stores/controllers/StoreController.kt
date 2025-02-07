@@ -2,8 +2,7 @@ package iut.nantes.project.stores.controllers
 
 import iut.nantes.project.stores.controllers.dto.Product
 import iut.nantes.project.stores.controllers.dto.StoreDto
-import iut.nantes.project.stores.exceptions.DuplicateElementsException
-import iut.nantes.project.stores.exceptions.InvalidRequestParameters
+import iut.nantes.project.stores.exceptions.ConflictException
 import iut.nantes.project.stores.services.StoreService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -23,6 +22,7 @@ class StoreController(private val storeService: StoreService) {
 
     // GET /api/v1/stores :  Récupérer tous les magasins triés par nom (a→z)
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     fun getAllStores(): List<StoreDto> {
         return storeService.getAllStores()
     }
@@ -35,6 +35,7 @@ class StoreController(private val storeService: StoreService) {
 
     // PUT /api/v1/stores/{id} : Mettre à jour un magasin
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     fun updateStore(
         @PathVariable id: String,
         @Valid @RequestBody storeUpdate: StoreDto
@@ -56,10 +57,6 @@ class StoreController(private val storeService: StoreService) {
         @PathVariable productId: String,
         @RequestParam(required = false, defaultValue = "1") quantity: Int
     ): Product {
-        if (quantity <= 0) {
-            throw InvalidRequestParameters()
-        }
-
         return storeService.addProductToStore(storeId, productId, quantity)
     }
 
@@ -70,11 +67,8 @@ class StoreController(private val storeService: StoreService) {
         @PathVariable productId: String,
         @RequestParam(required = false, defaultValue = "1") quantity: Int
     ): Product {
-        if (quantity <= 0) {
-            throw InvalidRequestParameters()
-        }
 
-        return storeService.removeProductFromStore(storeId, productId, quantity)
+        return storeService.removeProductFromStock(storeId, productId, quantity)
     }
 
     // DELETE /api/v1/stores/{storeId}/products
@@ -84,12 +78,23 @@ class StoreController(private val storeService: StoreService) {
         @PathVariable storeId: String,
         @RequestBody productsToRemove: List<String>
     ) {
-        if (productsToRemove.isEmpty()) return
-
-        if (productsToRemove.distinct().size != productsToRemove.size) {
-            throw DuplicateElementsException()
-        }
 
         storeService.removeProductsFromStore(storeId, productsToRemove)
+    }
+
+    // DELETE /api/v1/stores/products/{productID}
+    //Fonction pour pouvoir remove un produit du store, depuis le serveur qui gère les produits.
+    @DeleteMapping("/products/{productId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun removeProduct(
+        @PathVariable productId: String
+    ): Boolean {
+        val result = storeService.productExistInStore(productId)
+        if (result) {
+            throw ConflictException()
+        } else {
+            storeService.removeProductsFromStoreIfZeroQuantity(productId)
+            return true
+        }
     }
 }

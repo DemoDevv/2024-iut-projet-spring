@@ -53,6 +53,8 @@ class FamilleController(private val familleService: FamilleService) {
             ResponseEntity.ok(updatedFamille)
         } catch (e: FamilleNameConflictException) {
             ResponseEntity.status(HttpStatus.CONFLICT).body(mapOf("error" to "Family name conflict"))
+        } catch (e:FamilleNotFoundException){
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to "Family not found"))
         }
     }
 
@@ -61,7 +63,7 @@ class FamilleController(private val familleService: FamilleService) {
     fun deleteFamille(@PathVariable id: String): ResponseEntity<Any> {
         return try {
             familleService.deleteFamille(id)
-            ResponseEntity.noContent().build()
+            ResponseEntity.status(HttpStatus.NO_CONTENT).body("family has been deleted successfully")
         } catch (e: FamilleNotFoundException) {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to "Family not found"))
         } catch (e: FamilleHasLinkedProductsException) {

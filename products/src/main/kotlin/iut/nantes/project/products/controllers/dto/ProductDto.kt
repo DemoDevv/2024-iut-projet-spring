@@ -6,18 +6,18 @@ import jakarta.validation.constraints.Size
 
 data class Price(
     @field:Positive
-    val amout: Int,
+    val amount: Int,
     @field:Size(max = 3)
     val currency: String,
 ) {
-    constructor(): this(0, "")
+    constructor() : this(0, "")
 }
 
 data class ProductDto(
     var id: String?,
-    @field:Size(min = 2, max = 20, message = "Le nom d'utilisateur doit contenir entre 2 et 20 caractères")
+    @field:Size(min = 2, max = 20, message = "the username must have between 2 and 20 caracters")
     val name: String,
-    @field:Size(min = 5, max = 100, message = "La description doit contenir entre 5 et 100 caractères")
+    @field:Size(min = 5, max = 100, message = "the description must have between 5 and 100 caracters")
     val description: String?,
     val price: Price,
     var family: FamilleDto

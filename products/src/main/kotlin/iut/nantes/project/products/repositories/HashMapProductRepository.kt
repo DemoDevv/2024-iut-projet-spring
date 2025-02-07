@@ -3,7 +3,7 @@ package iut.nantes.project.products.repositories
 import iut.nantes.project.products.controllers.entities.ProductEntity
 import java.util.*
 
-class HashMapProductRepository: ProductRepository {
+class HashMapProductRepository : ProductRepository {
     private val data = mutableMapOf<String, ProductEntity>()
 
     override fun save(entity: ProductEntity): ProductEntity {

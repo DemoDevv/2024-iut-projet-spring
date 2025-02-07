@@ -5,4 +5,4 @@ import org.springframework.context.annotation.Profile
 import org.springframework.data.jpa.repository.JpaRepository
 
 @Profile("!dev")
-interface JpaFamilleRepository: FamilleRepository, JpaRepository<FamilleEntity, String>
+interface JpaFamilleRepository : FamilleRepository, JpaRepository<FamilleEntity, String>
