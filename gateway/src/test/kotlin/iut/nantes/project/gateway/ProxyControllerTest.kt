@@ -224,7 +224,7 @@ class ProxyControllerTest {
 
         mockMvc.delete("/api/v1/stores/{storeId}/products",storeId) {
             contentType=MediaType.APPLICATION_JSON
-            content= """['${products["products"]!![1]}','${products["products"]!![2]}']"""
+            content= """["${products["products"]!![1]}","${products["products"]!![2]}"]"""
 
         }.andExpect {
             status { isNoContent() }

@@ -22,6 +22,7 @@ class StoreController(private val storeService: StoreService) {
 
     // GET /api/v1/stores :  Récupérer tous les magasins triés par nom (a→z)
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     fun getAllStores(): List<StoreDto> {
         return storeService.getAllStores()
     }
@@ -34,6 +35,7 @@ class StoreController(private val storeService: StoreService) {
 
     // PUT /api/v1/stores/{id} : Mettre à jour un magasin
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     fun updateStore(
         @PathVariable id: String,
         @Valid @RequestBody storeUpdate: StoreDto
