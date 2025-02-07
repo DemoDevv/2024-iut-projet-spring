@@ -42,7 +42,7 @@ class ProxyControllerTest {
     fun `basic Admin GET request`() {
         mockMvc.get("/api/v1/products")
             .andExpect {
-                status { HttpStatus.OK }
+                status { isOk()}
             }
     }
 
@@ -50,8 +50,10 @@ class ProxyControllerTest {
     @Test
     fun `basic anonymous GET request`() {
         mockMvc.get("/api/v1/products")
+
             .andExpect {
-                status { HttpStatus.UNAUTHORIZED }
+
+                status { isUnauthorized() }
             }
     }
 
@@ -66,7 +68,7 @@ class ProxyControllerTest {
             content = requestBody
         }
             .andExpect {
-                status { HttpStatus.UNAUTHORIZED }
+                status { isUnauthorized() }
             }
     }
 
@@ -81,7 +83,7 @@ class ProxyControllerTest {
             content = requestBody
         }
             .andExpect {
-                status { HttpStatus.CREATED }
+                status { isCreated()}
             }
     }
 
@@ -106,7 +108,7 @@ class ProxyControllerTest {
             contentType = MediaType.APPLICATION_JSON
             content = newRequestBody
         }.andExpect {
-            status { HttpStatus.OK }
+            status { isOk() }
         }
     }
 
@@ -136,7 +138,7 @@ class ProxyControllerTest {
             contentType = MediaType.APPLICATION_JSON
             content = newRequestBody
         }.andExpect {
-            status { HttpStatus.UNAUTHORIZED }
+            status { isUnauthorized() }
         }
     }
 
@@ -146,7 +148,7 @@ class ProxyControllerTest {
     fun `basic Admin DELETE request`() {
 
 
-        val requestBody = """{"name":"Drink","description":"All Drink"}"""
+        val requestBody = """{"name":"fast foods","description":"All fastfood"}"""
 
         val request = mockMvc.post("/api/v1/families") {
             contentType = MediaType.APPLICATION_JSON
@@ -160,7 +162,7 @@ class ProxyControllerTest {
 
         mockMvc.delete("/api/v1/families/{id}", id)
             .andExpect {
-                status { HttpStatus.NO_CONTENT }
+                status { isNoContent()}
             }
     }
 
@@ -171,7 +173,7 @@ class ProxyControllerTest {
 
         val adminAutorisation = adminAutorisationForAnonymousTreatement()
 
-        val requestBody = """{"name":"Drink","description":"All Drink"}"""
+        val requestBody = """{"name":"salads","description":"All salads"}"""
 
         val request = mockMvc.post("/api/v1/families") {
             contentType = MediaType.APPLICATION_JSON
@@ -186,7 +188,7 @@ class ProxyControllerTest {
 
         mockMvc.delete("/api/v1/families/{id}", id)
             .andExpect {
-                status { HttpStatus.UNAUTHORIZED }
+                status { isUnauthorized() }
             }
     }
 
@@ -209,7 +211,7 @@ class ProxyControllerTest {
 
             header("Authorization", adminCredentials)
         }.andExpect {
-            status { HttpStatus.CREATED }
+            status { isCreated() }
         }
     }
 
