@@ -28,16 +28,16 @@ class ProxyController(private val webClientBuilder: WebClient.Builder) {
         @RequestParam params: MultiValueMap<String, String>,
         request: HttpServletRequest,
 
-        //pour les requetes POST et PUT
+        //for POST / PUT request
         @RequestBody(required = false) body: String?
     ): ResponseEntity<*> {
-        // Extraire le login de l'utilisateur authentifié
+        // extract login from authentified user
         val authentication = SecurityContextHolder.getContext().authentication
         val username = authentication.name
 
         val endpoint = request.requestURI.substringAfter("/$service", missingDelimiterValue = "")
 
-        // Construire l'URL cible en fonction du service
+        // build the target URL depending on service;
         var targetUrl = when (service) {
             "families" -> "$productsServiceUrl/$service$endpoint"
             "products" -> "$productsServiceUrl/$service$endpoint"
@@ -49,12 +49,12 @@ class ProxyController(private val webClientBuilder: WebClient.Builder) {
         if (params.isNotEmpty()) targetUrl =
             targetUrl.plus("?${params.map { "${it.key}=${it.value[0]}" }.joinToString("&")}")
 
-        // Ajouter le header X-User avec le login de l'utilisateur
+        // add "X-User" header with the user login.
         val modifiedHeaders = HttpHeaders()
         modifiedHeaders.putAll(headers)
         modifiedHeaders["X-User"] = username
 
-        // Utiliser WebClient pour rediriger la requête
+        // Use WebClient to redirect the request
         try {
             return when (request.method) {
 
@@ -89,9 +89,13 @@ class ProxyController(private val webClientBuilder: WebClient.Builder) {
 
                 HttpMethod.DELETE.name() -> webClientBuilder
                     .build()
-                    .delete()
+
+                    //we used ".method" instead of delete() because this one don't have bodyValue() method. We have some Route with a body when it's a DELETE request.
+                    .method(HttpMethod.DELETE)
                     .uri(targetUrl)
+                    .bodyValue(body?: "")
                     .headers { it.addAll(modifiedHeaders) }
+
                     .retrieve()
                     .toEntity(String::class.java)
                     .block() ?: ResponseEntity.internalServerError().build<Any>()

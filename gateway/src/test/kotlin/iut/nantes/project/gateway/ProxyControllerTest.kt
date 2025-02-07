@@ -96,7 +96,7 @@ class ProxyControllerTest {
     @Test
     fun `basic Admin PUT request`() {
 
-        val requestBody = """{"name":"Food","description":"All foods"}"""
+        val requestBody = """{"name":"Super food","description":"All super foods"}"""
 
         val request = mockMvc.post("/api/v1/families") {
             contentType = MediaType.APPLICATION_JSON
@@ -201,9 +201,8 @@ class ProxyControllerTest {
 
     @WithMockUser(roles = ["USER"])
     @Test
-    fun `post stock remove is authorized for basic user`(){
+    fun `all stock routes are authorized for a basic user`(){
 
-        val adminCredentials = adminAutorisationForAnonymousTreatement()
 
         val storeId = createCompletStoreFromScratch()
         val products = createSomeProducts()
@@ -212,9 +211,7 @@ class ProxyControllerTest {
         mockMvc.post(
             "/api/v1/stores/{storeId}/products/{productID}/add?quantity=4", storeId,
             products["products"]?.get(1) ?: 0
-        ) {
-            header("Authorization", adminCredentials)
-        }.andExpect {
+        ).andExpect {
             status { isOk() }
         }
 
@@ -225,18 +222,6 @@ class ProxyControllerTest {
             status { isOk() }
         }
 
-
-    }
-
-    @WithAnonymousUser
-    @Test
-    fun `delete stock is authorized for anonymous user`(){
-
-        val adminCredentials = adminAutorisationForAnonymousTreatement()
-
-        val storeId = createCompletStoreFromScratch()
-        val products = createSomeProducts()
-
         mockMvc.delete("/api/v1/stores/{storeId}/products",storeId) {
             contentType=MediaType.APPLICATION_JSON
             content= """['${products["products"]!![1]}','${products["products"]!![2]}']"""
@@ -244,11 +229,8 @@ class ProxyControllerTest {
         }.andExpect {
             status { isNoContent() }
         }
+
     }
-
-
-
-
 
 
     //Créer un magasin en base et retourne son id.
