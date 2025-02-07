@@ -20,7 +20,7 @@ class ProxyControllerTest {
 
 //Before testing, reboot the product and stores server.
 //They must be in memory, in order to escape duplicates.
-//excepts 'stocks' test, you can testing all tests.
+//excepts 'stocks' test, you can test all tests.
 //But if you want re test one test, please follow the first instruction.
 
     @Autowired
@@ -32,8 +32,8 @@ class ProxyControllerTest {
 
 
 
-    //give an admin privilege to populate a server in memory from gateway when we test a route for an anonymous user.
-    private fun adminAutorisationForAnonymousTreatement(): String {
+    //give an admin privilege to populate a server in memory from gateway when we test a route for a default user.
+    private fun adminAutorisationFordefaultUserTreatement(): String {
 
         val credentials = "ADMIN:ADMIN"
         val encoded = Base64.encodeBase64String(credentials.toByteArray())
@@ -121,7 +121,7 @@ class ProxyControllerTest {
     @Test
     fun `basic user PUT request`() {
 
-        val adminAutorisation = adminAutorisationForAnonymousTreatement()
+        val adminAutorisation = adminAutorisationFordefaultUserTreatement()
 
         val requestBody = """{"name":"Drink","description":"All Drink"}"""
 
@@ -175,7 +175,7 @@ class ProxyControllerTest {
     @Test
     fun `basic user DELETE request`() {
 
-        val adminAutorisation = adminAutorisationForAnonymousTreatement()
+        val adminAutorisation = adminAutorisationFordefaultUserTreatement()
 
         val requestBody = """{"name":"salads","description":"All salads"}"""
 
@@ -236,7 +236,7 @@ class ProxyControllerTest {
     //create store and return his id.
     private fun createCompletStoreFromScratch(): Int {
 
-        val adminCredentials=adminAutorisationForAnonymousTreatement()
+        val adminCredentials=adminAutorisationFordefaultUserTreatement()
 
         val contact="""{"email": "contact1@email.com","phone": "0123456789","address": {"street": "15 Rue des Lilas","city": "Paris","postalCode": "75000"}}"""
         val requestcontact=mockMvc.post("/api/v1/contacts") {
@@ -263,7 +263,7 @@ class ProxyControllerTest {
 
     private fun createSomeProducts():MutableMap<String,List<String>>{
 
-        val adminCredentials = adminAutorisationForAnonymousTreatement()
+        val adminCredentials = adminAutorisationFordefaultUserTreatement()
         val hashmap= mutableMapOf<String,List<String>>()
 
         //create Families
