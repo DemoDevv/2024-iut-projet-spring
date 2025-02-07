@@ -196,7 +196,7 @@ class ProxyControllerTest {
             }
     }
 
-    //TO TEST AN UNIQUE STOCK TEST, REBOOT the two servers in memory.
+    //TO TEST STOCK TEST, REBOOT the two servers in memory.
 
 
     @WithMockUser(roles = ["USER"])
@@ -233,7 +233,7 @@ class ProxyControllerTest {
     }
 
 
-    //Créer un magasin en base et retourne son id.
+    //create store and return his id.
     private fun createCompletStoreFromScratch(): Int {
 
         val adminCredentials=adminAutorisationForAnonymousTreatement()
@@ -273,7 +273,6 @@ class ProxyControllerTest {
             """{"name": "Kitchen Appliances","description": "Devices used for food preparation, cooking, and storage in the kitchen."}"""
 
 
-        //première famille
         val requestFamily1=mockMvc.post("/api/v1/families") {
             contentType = MediaType.APPLICATION_JSON
             content = family1RequestBody
@@ -284,7 +283,7 @@ class ProxyControllerTest {
         val familyid1: String = JsonPath.read(responseFamily1, "$.id")
 
 
-        //seconde famille
+
         val requestFamily2=mockMvc.post("/api/v1/families") {
             contentType = MediaType.APPLICATION_JSON
             content = family2RequestBody
@@ -304,7 +303,6 @@ class ProxyControllerTest {
             """{"name": "Instant Pot Duo","description": "7-in-1 electric pressure cooker with multiple cooking functions.","price": {"amount": 89,"currency": "USD"},"family": {"id":"$familyid2","name": "Kitchen Appliances","description": "Devices used for food preparation, cooking, and storage in the kitchen."}}
             """
 
-        //premier produit
         val requestproduct1=mockMvc.post("/api/v1/products") {
             contentType = MediaType.APPLICATION_JSON
             content = product1Requestbody
@@ -314,7 +312,6 @@ class ProxyControllerTest {
         val responseProduct1 = requestproduct1.response.contentAsString
         val product1id: String = JsonPath.read(responseProduct1, "$.id")
 
-        //second produit
         val requestproduct2=mockMvc.post("/api/v1/products") {
             contentType = MediaType.APPLICATION_JSON
             content = product2Requestbody
@@ -325,7 +322,6 @@ class ProxyControllerTest {
         val product2id: String = JsonPath.read(responseProduct2, "$.id")
 
 
-        //troisième produit
         val requestproduct3=mockMvc.post("/api/v1/products") {
             contentType = MediaType.APPLICATION_JSON
             content = product3Requestbody
