@@ -1,8 +1,8 @@
 == Informations Principales: 
 - Groupe Mathieu LE BRAS et Louis PRESTI
 - La gateway fonctionne mais uniquement en mémoire (security:memory), nous n'avons pas réussi à faire fonctionner la gateway avec JDBC
-- Sinon le serveur store et products sont capables d'être en mémoire ou en base.
-
+- Sinon le serveur store et products sont capables d'être en mémoire ou en base h2.
+-Quelques données sont disponibles dans le dossier data/ afin de pouvoir avoir des templates basiques de données JSON à insérer.
 
 
 
