@@ -85,12 +85,16 @@ class ProductService(
             throw InvalidIdFormatException("Id is not in a UUID format")
         }
 
-        webClient.delete().uri("/api/v1/stores/products/{productId}", productId).retrieve()
+        webClient.delete().uri("/api/v1/stores/products/{productId}", productId)
+            .header("X-User", "RandomUser")
+            .retrieve()
             .onStatus({ status -> status == HttpStatus.CONFLICT }) { _ ->
-                Mono.error(ProductNotDeletableException("This product still present in some stores with a quantity greater than 0."))
+                Mono.error<Throwable?>(ProductNotDeletableException("This product still present in some stores with a quantity greater than 0."))
+
+
             }.bodyToMono(Boolean::class.java).block()
 
-        //Si le code est exécuté ici, c'est qu'il n'a pas de conflits, on peut donc supprimer le produit.
+        //if the code is executed here, so there are no conflicts,we can delete the product.
         try {
             productRepository.deleteById(productId)
 

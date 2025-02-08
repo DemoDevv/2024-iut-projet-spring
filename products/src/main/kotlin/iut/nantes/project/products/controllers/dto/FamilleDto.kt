@@ -8,11 +8,11 @@ data class FamilleDto(
     @NotNull
     var id: String?,
     @field:Size(min = 3, max = 30, message = "The name must have between 3 and 30 caracters")
-    val name: String,
+    val name: String?,
     @field:Size(min = 5, max = 100, message = "The description must have between 5 and 100 caracters")
-    val description: String
+    val description: String?
 ) {
     fun toEntity(): FamilleEntity {
-        return FamilleEntity(this.id, this.name, this.description)
+        return FamilleEntity(this.id, this.name?:"", this.description?:"")
     }
 }
