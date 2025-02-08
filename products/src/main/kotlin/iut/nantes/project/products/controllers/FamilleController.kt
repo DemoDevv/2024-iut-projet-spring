@@ -4,6 +4,7 @@ import iut.nantes.project.products.controllers.dto.FamilleDto
 import iut.nantes.project.products.exceptions.*
 import iut.nantes.project.products.services.FamilleService
 import jakarta.validation.Valid
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -22,6 +23,8 @@ class FamilleController(private val familleService: FamilleService) {
             ResponseEntity.status(HttpStatus.CREATED).body(createdFamille)
         } catch (e: FamilleNameConflictException) {
             ResponseEntity.status(HttpStatus.CONFLICT).body(mapOf("error" to "Family name already exists"))
+        }catch(e:DataIntegrityViolationException){
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("bad request: attributs are not well written")
         }
     }
 
@@ -55,6 +58,8 @@ class FamilleController(private val familleService: FamilleService) {
             ResponseEntity.status(HttpStatus.CONFLICT).body(mapOf("error" to "Family name conflict"))
         } catch (e:FamilleNotFoundException){
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("error" to "Family not found"))
+        }catch (e:DataIntegrityViolationException){
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("please fill all attributes")
         }
     }
 

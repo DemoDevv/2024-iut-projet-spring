@@ -20,8 +20,11 @@ class FamilleService(
     ) {
     fun createFamille(famille: FamilleDto): FamilleDto {
         if (!environment.activeProfiles.contains("test")) famille.id = UUID.randomUUID().toString()
-
+        if(famille.name==null||famille.description==null){
+            throw DataIntegrityViolationException("Problems with attributes")
+        }
         try {
+
             val newFamille = familleRepository.save(famille.toEntity())
             return newFamille.toDto()
         } catch (e: DataIntegrityViolationException) {

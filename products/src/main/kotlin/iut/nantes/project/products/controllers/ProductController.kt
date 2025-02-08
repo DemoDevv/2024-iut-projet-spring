@@ -78,9 +78,9 @@ class ProductController(private val productService: ProductService) {
     fun deleteProduct(@PathVariable id: String): ResponseEntity<Any> {
         return try {
             productService.deleteProductById(id)
-            ResponseEntity.noContent().build() // 204 No Content
+            ResponseEntity.status(HttpStatus.NO_CONTENT).body("deleted succefully") // 204 No Content
         } catch (e: InvalidIdFormatException) {
-            ResponseEntity.badRequest().build()
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
         } catch (e: ProductNotDeletableException) {
             ResponseEntity.status(HttpStatus.CONFLICT).body(e.message)
         }
