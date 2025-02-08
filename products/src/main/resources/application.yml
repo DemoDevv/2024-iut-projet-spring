@@ -3,7 +3,7 @@ spring:
   profiles:
     active: prod
   datasource:
-    url: "jdbc:h2:mem:productdb"
+    url: "jdbc:h2:mem:productDB"
     driverClassName: org.h2.Driver
     username: sa
     password: password

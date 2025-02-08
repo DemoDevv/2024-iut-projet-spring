@@ -1,7 +1,9 @@
 spring:
   application.name: stores
+  profiles:
+    active: prod
   datasource:
-    url: "jdbc:h2:mem:productdb"
+    url: "jdbc:h2:mem:StoreDB"
     driverClassName: org.h2.Driver
     username: sa
     password: password
