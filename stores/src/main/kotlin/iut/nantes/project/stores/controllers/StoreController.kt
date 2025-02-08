@@ -20,20 +20,20 @@ class StoreController(private val storeService: StoreService) {
         return storeService.createStore(storeDto)
     }
 
-    // GET /api/v1/stores :  Récupérer tous les magasins triés par nom (a→z)
+    // GET /api/v1/stores :  get all stores sorted by (a→z)
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun getAllStores(): List<StoreDto> {
         return storeService.getAllStores()
     }
 
-    // GET /api/v1/stores/{id} : Récupérer un magasin par son ID
+    // GET /api/v1/stores/{id} : get store by id
     @GetMapping("/{id}")
     fun getStoreById(@PathVariable id: String): StoreDto {
         return storeService.getStoreById(id)
     }
 
-    // PUT /api/v1/stores/{id} : Mettre à jour un magasin
+    // PUT /api/v1/stores/{id} : update store
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     fun updateStore(
@@ -43,7 +43,7 @@ class StoreController(private val storeService: StoreService) {
         return storeService.updateStore(id, storeUpdate)
     }
 
-    // DELETE /api/v1/stores/{id} : Supprimer un magasin
+    // DELETE /api/v1/stores/{id} : delete store
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteStore(@PathVariable id: String) {
@@ -83,7 +83,7 @@ class StoreController(private val storeService: StoreService) {
     }
 
     // DELETE /api/v1/stores/products/{productID}
-    //Fonction pour pouvoir remove un produit du store, depuis le serveur qui gère les produits.
+    //this function is usefully in order to remove a product of a store from the product server
     @DeleteMapping("/products/{productId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun removeProduct(

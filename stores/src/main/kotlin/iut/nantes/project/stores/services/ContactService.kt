@@ -49,7 +49,7 @@ class ContactService(private val contactRepository: ContactRepository, private v
 
 
     private fun verifyContact(contact: ContactDto) {
-        //validité du mail
+        //email verification
         val emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$".toRegex()
         if (!contact.email.matches(emailRegex)) {
             throw EmailNotValidExeception()

@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/v1/products")
 class ProductController(private val productService: ProductService) {
-    // POST: Créer un produit
+    // POST: create product
     @PostMapping
     fun createProduct(@RequestBody @Valid product: ProductDto): ResponseEntity<Any> {
         return try {
@@ -27,7 +27,7 @@ class ProductController(private val productService: ProductService) {
         }
     }
 
-    // GET: Récupérer tous les produits (avec filtres optionnels)
+    // GET: get all products (with optionals filters)
     @GetMapping
     fun getProducts(
         @RequestParam(required = false) familyname: String?,
@@ -46,7 +46,7 @@ class ProductController(private val productService: ProductService) {
         return ResponseEntity.ok(products)
     }
 
-    // GET: Récupérer un produit par ID
+    // GET: get product by id
     @GetMapping("/{id}")
     fun getProductById(@PathVariable id: String): ResponseEntity<Any> {
         return try {
@@ -59,7 +59,7 @@ class ProductController(private val productService: ProductService) {
         }
     }
 
-    // PUT: Mettre à jour un produit par ID
+    // PUT: update product by id
     @PutMapping("/{id}")
     fun updateProduct(
         @PathVariable id: String,
@@ -73,7 +73,7 @@ class ProductController(private val productService: ProductService) {
         }
     }
 
-    // DELETE: Supprimer un produit par ID
+    // DELETE:  delete product
     @DeleteMapping("/{id}")
     fun deleteProduct(@PathVariable id: String): ResponseEntity<Any> {
         return try {

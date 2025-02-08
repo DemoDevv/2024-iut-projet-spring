@@ -74,7 +74,7 @@ class FamilleService(
          familleRepository.findById(id)
             .orElseThrow { FamilleNotFoundException("Famille with ID $id not found.") }
 
-        // Vérification s'il y a des produits liés à cette famille
+        //Verify if there are products linked at this family
         if (productRepository.findAll().any { it.family.id == id }) {
             throw FamilleHasLinkedProductsException("Cannot delete a family with linked products.")
         } else {

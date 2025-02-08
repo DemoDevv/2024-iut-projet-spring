@@ -10,7 +10,7 @@ class WebClientConfig {
     @Bean
     fun webClient(): WebClient {
         return WebClient.builder()
-            .baseUrl("http://localhost:8081") // utilisé pour les appels vers d'autres api donc changer par l'url de l'api
+            .baseUrl("http://localhost:8081") //used for calling others api
             .build()
     }
 

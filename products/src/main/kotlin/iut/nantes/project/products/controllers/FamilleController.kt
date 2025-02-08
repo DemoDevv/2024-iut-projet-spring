@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/v1/families")
 class FamilleController(private val familleService: FamilleService) {
 
-    // POST: Créer une famille
+    // POST: Create family
     @PostMapping
     fun createFamily(@RequestBody @Valid famille: FamilleDto): ResponseEntity<Any> {
         return try {
@@ -28,14 +28,14 @@ class FamilleController(private val familleService: FamilleService) {
         }
     }
 
-    // GET: Récupérer toutes les familles
+    // GET: get all families
     @GetMapping
     fun getAllFamilies(): ResponseEntity<List<FamilleDto>> {
         val familles = familleService.getAllFamilles()
         return ResponseEntity.ok(familles)
     }
 
-    // GET: Récupérer une famille par ID
+    // GET: get family by id
     @GetMapping("/{id}")
     fun getFamilyById(@PathVariable id: String): ResponseEntity<Any> {
         return try {
@@ -48,7 +48,7 @@ class FamilleController(private val familleService: FamilleService) {
         }
     }
 
-    // PUT: Mettre à jour une famille
+    // PUT: update family
     @PutMapping("/{id}")
     fun updateFamily(@PathVariable id: String, @RequestBody @Valid famille: FamilleDto): ResponseEntity<Any> {
         return try {
@@ -63,7 +63,7 @@ class FamilleController(private val familleService: FamilleService) {
         }
     }
 
-    // DELETE: Supprimer une famille
+    // DELETE: delete family
     @DeleteMapping("/{id}")
     fun deleteFamille(@PathVariable id: String): ResponseEntity<Any> {
         return try {

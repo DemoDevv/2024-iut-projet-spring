@@ -3,9 +3,9 @@ package iut.nantes.project.stores.exceptions
 import java.lang.RuntimeException
 
 
-// Exception levée lorsqu'un contact n'est pas trouvé (HTTP 404)
+// caught when contact not found (HTTP 404)
 class ContactNotFoundException() : RuntimeException()
 
-// Exception levée lorsqu'un l'email du contact est invalide
+// caught when the email of  contact is invalid
 class EmailNotValidExeception() : RuntimeException()
 
