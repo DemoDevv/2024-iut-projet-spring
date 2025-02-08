@@ -48,6 +48,12 @@ class FamilleService(
     fun updateFamille(id: String, familleUpdate: FamilleDto): FamilleDto {
         val famille = familleRepository.findById(id).orElseThrow { FamilleNotFoundException("Family not found.") }
 
+
+        if (familleUpdate.name==null||familleUpdate.description==null){
+            throw DataIntegrityViolationException("send all the familly body")
+        }
+
+
         famille.name = familleUpdate.name
         famille.description = familleUpdate.description
 
@@ -62,7 +68,7 @@ class FamilleService(
 
     fun deleteFamille(id: String) {
 
-        val family = familleRepository.findById(id)
+         familleRepository.findById(id)
             .orElseThrow { FamilleNotFoundException("Famille with ID $id not found.") }
 
         // Vérification s'il y a des produits liés à cette famille

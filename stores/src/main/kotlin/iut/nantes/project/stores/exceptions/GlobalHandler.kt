@@ -37,24 +37,6 @@ class GlobalHandler {
     fun handleEmailNotValidException(ex: EmailNotValidExeception): ResponseEntity<String> =
         ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email format doesn't match.")
 
-    @ExceptionHandler(PhoneNumberException::class)
-    fun handlePhoneNumberNotValidException(ex: PhoneNumberException): ResponseEntity<String> =
-        ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body("The phone number must be a french number (example: 012345678)")
-
-    @ExceptionHandler(StreetNotValidException::class)
-    fun handleStreetNotValidException(ex: StreetNotValidException): ResponseEntity<String> =
-        ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The street must be between  5 and 50 caracters")
-
-    @ExceptionHandler(CityNotValidException::class)
-    fun handleCityNotValidException(ex: CityNotValidException): ResponseEntity<String> =
-        ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The city must be between  1 and 30 caracters")
-
-    @ExceptionHandler(PostalCodeNotValidException::class)
-    fun handlePostalCodeNotValidException(ex: PostalCodeNotValidException): ResponseEntity<String> =
-        ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A postal Code must be a french code (example:49140).")
-
-
     //Exception Stores
     @ExceptionHandler(StoreNotFoundException::class)
     fun handleStoreNotFoundException(ex: StoreNotFoundException): ResponseEntity<String> =
